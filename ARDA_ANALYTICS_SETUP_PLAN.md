@@ -1,0 +1,177 @@
+# ARDA Analytics - Project Setup Plan
+
+## Project Overview
+Building a vanilla JavaScript analytics plugin with orchestrator architecture that can be distributed via NPM and CDN, plus a React.js demo/documentation website.
+
+---
+
+## Phase 1: Project Structure & Configuration
+- [x] Initialize project structure
+	- [x] Create root package.json with pnpm workspace configuration
+	- [x] Set up workspace directories: `plugin/`, `website/`, `docs/`
+	- [x] Create .gitignore for Node.js project with build artifacts
+	- [x] Add .editorconfig with tab indentation preference
+	- [x] Create basic README.md with project overview
+
+- [x] Configure build tooling for plugin
+	- [x] Set up webpack/rollup for plugin bundling with source maps
+	- [x] Configure build to output single minified file for CDN distribution
+	- [x] Configure build to output ES modules and CommonJS for NPM distribution
+	- [x] Set up development build with source maps for debugging
+	- [x] Add build scripts to package.json
+
+---
+
+## Phase 2: Plugin Architecture Setup
+- [x] Create orchestrator-style plugin structure
+	- [x] Main orchestrator file (`src/index.js`) - handles initialization and coordination
+	- [x] Core modules directory (`src/core/`) 
+		- [x] `config.js` - configuration management
+		- [x] `events.js` - event handling system
+		- [x] `storage.js` - data storage utilities
+		- [x] `api.js` - API communication layer
+	- [x] Utilities directory (`src/utils/`)
+		- [x] `dom.js` - DOM manipulation helpers
+		- [x] `validation.js` - input validation utilities
+		- [x] `helpers.js` - general utility functions
+	- [x] Types directory (`src/types/`) - JSDoc type definitions
+
+- [x] Plugin core functionality framework
+	- [x] Initialize plugin class/object structure in main orchestrator
+	- [x] Set up module registration system for loading core modules
+	- [x] Implement configuration merging and validation
+	- [x] Create event system for inter-module communication
+	- [x] Add error handling and logging framework
+	- [x] Implement graceful degradation for unsupported browsers
+
+- [x] Distribution preparation
+	- [x] Configure build output for multiple formats (UMD, ES6, CommonJS)
+	- [x] Set up package.json exports field for modern module resolution
+	- [x] Create TypeScript declaration files (.d.ts) for better IDE support
+	- [x] Add source map generation for debugging
+
+---
+
+## Phase 3: NPM Package Configuration
+- [ ] Configure package.json for NPM publishing
+	- [ ] Set correct entry points (main, module, browser fields)
+	- [ ] Configure files array to include only necessary distribution files
+	- [ ] Add proper keywords and description for discoverability
+	- [ ] Set up semantic versioning strategy
+	- [ ] Configure publish scripts and pre-publish hooks
+
+- [ ] Set up development workflow
+	- [ ] Add linting with ESLint (configured for vanilla JS)
+	- [ ] Set up Prettier for code formatting (tabs configuration)
+	- [ ] Create pre-commit hooks with husky
+	- [ ] Add test framework setup (Jest or similar)
+	- [ ] Configure CI/CD workflow for automated testing and publishing
+
+---
+
+## Phase 4: Demo Website Setup (React.js)
+- [ ] Initialize React application in `website/` directory
+	- [ ] Create React app with modern tooling (Vite or Create React App)
+	- [ ] Configure build output to separate `dist/` directory
+	- [ ] Set up routing with React Router for multiple pages
+	- [ ] Configure Tailwind CSS with Shadcn-ui component library
+	- [ ] Set up dark/light mode toggle with theme persistence
+	- [ ] Configure tech-y aesthetic with monospace fonts (JetBrains Mono, Fira Code, or similar)
+	- [ ] Add responsive design framework
+
+- [ ] Create website page structure
+	- [ ] Marketing homepage (`/`)
+		- [ ] Hero section with plugin overview
+		- [ ] Features showcase section
+		- [ ] Getting started/installation section
+		- [ ] Code examples section
+		- [ ] Call-to-action for documentation
+	- [ ] Demo pages (`/demo/*`)
+		- [ ] Interactive demo playground
+		- [ ] Feature-specific demo pages
+		- [ ] Live code examples with syntax highlighting
+		- [ ] Real-time plugin functionality showcase
+	- [ ] Documentation pages (`/docs/*`)
+		- [ ] API reference documentation
+		- [ ] Configuration options guide
+		- [ ] Integration examples for different frameworks
+		- [ ] Troubleshooting guide
+
+- [ ] Website functionality
+	- [ ] Integrate the actual plugin for live demonstrations
+	- [ ] Add syntax highlighting for code examples (Prism.js or highlight.js) with dark/light theme support
+	- [ ] Implement search functionality for documentation
+	- [ ] Add responsive navigation with dark/light mode toggle
+	- [ ] Configure Shadcn-ui components for consistent tech aesthetic
+	- [ ] Set up monospace font stack for code blocks and technical elements
+	- [ ] Configure meta tags and SEO optimization
+
+---
+
+## Phase 5: Documentation & Integration Examples
+- [ ] Create comprehensive documentation
+	- [ ] API documentation with JSDoc integration
+	- [ ] Installation guides for different environments
+	- [ ] Framework-specific integration examples:
+		- [ ] React integration example
+		- [ ] Vue.js integration example
+		- [ ] Astro integration example
+		- [ ] Vanilla HTML/CSS/JS example
+        - [ ] Google Tag Manager integration guide
+		- [ ] WordPress plugin integration
+		- [ ] HubSpot integration guide
+
+- [ ] Code examples and snippets
+	- [ ] Basic usage examples
+	- [ ] Advanced configuration examples
+	- [ ] Custom event handler examples
+	- [ ] Integration with popular analytics services
+
+---
+
+## Phase 6: Distribution & Publishing Setup
+- [ ] CDN distribution preparation
+	- [ ] Create CDN-ready build with all dependencies bundled
+	- [ ] Set up versioned releases for CDN hosting
+	- [ ] Generate integrity hashes for security
+	- [ ] Create CDN usage documentation
+
+- [ ] NPM publishing workflow
+	- [ ] Configure automated version bumping
+	- [ ] Set up GitHub Actions for automated publishing
+	- [ ] Create release notes automation
+	- [ ] Configure npm provenance for security
+
+- [ ] Website deployment
+	- [ ] Configure website build for static hosting
+	- [ ] Set up deployment to GitHub Pages, Netlify, or Vercel
+	- [ ] Configure custom domain if needed
+	- [ ] Set up automated deployment on main branch updates
+
+---
+
+## Phase 7: Development Tools & Quality Assurance
+- [ ] Testing framework
+	- [ ] Unit tests for core plugin functionality
+	- [ ] Integration tests for module communication
+	- [ ] Browser compatibility testing setup
+	- [ ] Performance testing and benchmarking
+
+- [ ] Development environment
+	- [ ] Hot reload development server for plugin
+	- [ ] Live reload for website development
+	- [ ] Source map debugging configuration
+	- [ ] Development vs production build configurations
+
+- [ ] Quality assurance
+	- [ ] Bundle size monitoring and optimization
+	- [ ] Performance profiling tools
+	- [ ] Accessibility testing for website
+	- [ ] Cross-browser testing setup
+
+---
+
+## Next Steps
+Once this foundation is established, you can provide the specific analytics functionality requirements and we can extend the plugin with the actual features and capabilities you need.
+
+**Note**: This plan uses source maps correctly - they'll allow the bundled single-file plugin to map back to the original source files for debugging, while still providing the single-file distribution you want for easy CDN usage.

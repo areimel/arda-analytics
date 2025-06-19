@@ -1,0 +1,38 @@
+{
+	"name": "arda-analytics",
+	"version": "0.1.0",
+	"description": "A vanilla JavaScript analytics plugin with orchestrator architecture",
+	"private": true,
+	"workspaces": [
+		"plugin",
+		"website",
+		"docs"
+	],
+	"scripts": {
+		"dev": "pnpm --parallel dev",
+		"build": "pnpm --recursive build",
+		"test": "pnpm --recursive test",
+		"lint": "pnpm --recursive lint",
+		"clean": "pnpm --recursive clean"
+	},
+	"devDependencies": {
+		"@types/node": "^20.0.0",
+		"eslint": "^8.57.0",
+		"prettier": "^3.2.5",
+		"husky": "^9.0.11"
+	},
+	"engines": {
+		"node": ">=18.0.0",
+		"pnpm": ">=8.0.0"
+	},
+	"packageManager": "pnpm@8.15.4",
+	"keywords": [
+		"analytics",
+		"plugin",
+		"javascript",
+		"orchestrator",
+		"tracking"
+	],
+	"author": "ARDA Analytics Team",
+	"license": "MIT"
+} 

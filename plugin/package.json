@@ -1,0 +1,70 @@
+{
+	"name": "@arda-analytics/plugin",
+	"version": "0.1.0",
+	"description": "ARDA Analytics - Vanilla JavaScript analytics plugin with orchestrator architecture",
+	"main": "dist/index.js",
+	"module": "dist/index.esm.js",
+	"browser": "dist/arda-analytics.min.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"dev": "webpack serve --mode development",
+		"build": "npm run build:bundle && npm run build:types",
+		"build:bundle": "webpack --mode production",
+		"build:dev": "webpack --mode development",
+		"build:types": "tsc --emitDeclarationOnly",
+		"clean": "rimraf dist",
+		"test": "jest",
+		"lint": "eslint src --ext .js,.ts",
+		"format": "prettier --write src/**/*.{js,ts}"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.esm.js",
+			"require": "./dist/index.js",
+			"browser": "./dist/arda-analytics.min.js",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json",
+		"./dist/*": "./dist/*"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.23.0",
+		"@babel/preset-env": "^7.23.0",
+		"@types/jest": "^29.5.0",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"babel-loader": "^9.1.0",
+		"eslint": "^8.57.0",
+		"jest": "^29.7.0",
+		"prettier": "^3.2.5",
+		"rimraf": "^5.0.5",
+		"terser-webpack-plugin": "^5.3.9",
+		"typescript": "^5.3.0",
+		"webpack": "^5.89.0",
+		"webpack-cli": "^5.1.4",
+		"webpack-dev-server": "^4.15.1"
+	},
+	"keywords": [
+		"analytics",
+		"plugin",
+		"javascript",
+		"orchestrator",
+		"tracking",
+		"vanilla-js"
+	],
+	"author": "ARDA Analytics Team",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/arda-analytics/arda-analytics.git",
+		"directory": "plugin"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+} 
