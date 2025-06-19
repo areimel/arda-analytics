@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+coverage
+
+# Package files
+package-lock.json
+pnpm-lock.yaml
+
+# Config files that should keep their formatting
+.babelrc
+
+# Logs
+*.log 

@@ -24,10 +24,12 @@ export class EventManager {
 		}
 
 		const listeners = this.listeners.get(event);
-		
+
 		// Check max listeners
 		if (listeners.length >= this.maxListeners) {
-			console.warn(`Maximum listeners (${this.maxListeners}) reached for event: ${event}`);
+			console.warn(
+				`Maximum listeners (${this.maxListeners}) reached for event: ${event}`,
+			);
 			return;
 		}
 
@@ -35,11 +37,11 @@ export class EventManager {
 			callback,
 			once: options.once || false,
 			priority: options.priority || 0,
-			id: options.id || this.generateId()
+			id: options.id || this.generateId(),
 		};
 
 		listeners.push(listener);
-		
+
 		// Sort by priority (higher priority first)
 		listeners.sort((a, b) => b.priority - a.priority);
 
@@ -68,19 +70,21 @@ export class EventManager {
 
 		const listeners = this.listeners.get(event);
 		const isId = typeof callbackOrId === 'string';
-		
-		const index = listeners.findIndex(listener => 
-			isId ? listener.id === callbackOrId : listener.callback === callbackOrId
+
+		const index = listeners.findIndex(listener =>
+			isId
+				? listener.id === callbackOrId
+				: listener.callback === callbackOrId,
 		);
 
 		if (index !== -1) {
 			listeners.splice(index, 1);
-			
+
 			// Clean up empty arrays
 			if (listeners.length === 0) {
 				this.listeners.delete(event);
 			}
-			
+
 			return true;
 		}
 
@@ -119,14 +123,14 @@ export class EventManager {
 			data,
 			timestamp: Date.now(),
 			preventDefault: false,
-			stopPropagation: false
+			stopPropagation: false,
 		};
 
 		let executedCount = 0;
 
 		for (let i = 0; i < listeners.length; i++) {
 			const listener = listeners[i];
-			
+
 			try {
 				// Call the listener
 				listener.callback.call(this, eventObj);
@@ -141,10 +145,9 @@ export class EventManager {
 				if (eventObj.stopPropagation) {
 					break;
 				}
-
 			} catch (error) {
 				console.error(`Error in event listener for '${event}':`, error);
-				
+
 				// Remove problematic listeners in production
 				if (!options.keepErroredListeners) {
 					listenersToRemove.push(i);
@@ -212,7 +215,9 @@ export class EventManager {
 	 * @returns {boolean} True if has listeners
 	 */
 	hasListeners(event) {
-		return this.listeners.has(event) && this.listeners.get(event).length > 0;
+		return (
+			this.listeners.has(event) && this.listeners.get(event).length > 0
+		);
 	}
 
 	/**
@@ -223,7 +228,7 @@ export class EventManager {
 		const info = {
 			totalEvents: this.listeners.size,
 			totalListeners: 0,
-			events: {}
+			events: {},
 		};
 
 		for (const [event, listeners] of this.listeners) {
@@ -233,11 +238,11 @@ export class EventManager {
 				listeners: listeners.map(l => ({
 					id: l.id,
 					once: l.once,
-					priority: l.priority
-				}))
+					priority: l.priority,
+				})),
 			};
 		}
 
 		return info;
 	}
-} 
+}

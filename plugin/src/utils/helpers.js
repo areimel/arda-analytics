@@ -55,11 +55,11 @@ export class HelperUtils {
 	 */
 	throttle(func, limit) {
 		let inThrottle;
-		return function(...args) {
+		return function (...args) {
 			if (!inThrottle) {
 				func.apply(this, args);
 				inThrottle = true;
-				setTimeout(() => inThrottle = false, limit);
+				setTimeout(() => (inThrottle = false), limit);
 			}
 		};
 	}
@@ -73,7 +73,7 @@ export class HelperUtils {
 			raw: ua,
 			browser: this.getBrowserInfo(ua),
 			os: this.getOSInfo(ua),
-			device: this.getDeviceInfo(ua)
+			device: this.getDeviceInfo(ua),
 		};
 	}
 
@@ -86,7 +86,7 @@ export class HelperUtils {
 			{ name: 'Firefox', pattern: /Firefox\/(\d+)/ },
 			{ name: 'Safari', pattern: /Version\/(\d+).*Safari/ },
 			{ name: 'Edge', pattern: /Edg\/(\d+)/ },
-			{ name: 'Opera', pattern: /OPR\/(\d+)/ }
+			{ name: 'Opera', pattern: /OPR\/(\d+)/ },
 		];
 
 		for (const browser of browsers) {
@@ -94,7 +94,7 @@ export class HelperUtils {
 			if (match) {
 				return {
 					name: browser.name,
-					version: match[1]
+					version: match[1],
 				};
 			}
 		}
@@ -111,7 +111,7 @@ export class HelperUtils {
 			{ name: 'macOS', pattern: /Mac OS X (\d+[._]\d+)/ },
 			{ name: 'Linux', pattern: /Linux/ },
 			{ name: 'Android', pattern: /Android (\d+)/ },
-			{ name: 'iOS', pattern: /OS (\d+)_(\d+)/ }
+			{ name: 'iOS', pattern: /OS (\d+)_(\d+)/ },
 		];
 
 		for (const system of systems) {
@@ -119,7 +119,7 @@ export class HelperUtils {
 			if (match) {
 				return {
 					name: system.name,
-					version: match[1] || 'Unknown'
+					version: match[1] || 'Unknown',
 				};
 			}
 		}
@@ -133,12 +133,12 @@ export class HelperUtils {
 	getDeviceInfo(ua) {
 		const isMobile = /Mobile|Android|iPhone|iPad/.test(ua);
 		const isTablet = /iPad|Tablet/.test(ua);
-		
+
 		return {
 			type: isTablet ? 'tablet' : isMobile ? 'mobile' : 'desktop',
 			isMobile,
 			isTablet,
-			isDesktop: !isMobile && !isTablet
+			isDesktop: !isMobile && !isTablet,
 		};
 	}
 
@@ -147,7 +147,7 @@ export class HelperUtils {
 	 */
 	getTimestamp(format = 'unix') {
 		const now = new Date();
-		
+
 		switch (format) {
 			case 'unix':
 				return Math.floor(now.getTime() / 1000);
@@ -167,14 +167,16 @@ export class HelperUtils {
 	 */
 	simpleHash(str) {
 		let hash = 0;
-		if (str.length === 0) return hash;
-		
+		if (str.length === 0) {
+			return hash;
+		}
+
 		for (let i = 0; i < str.length; i++) {
 			const char = str.charCodeAt(i);
-			hash = ((hash << 5) - hash) + char;
+			hash = (hash << 5) - hash + char;
 			hash = hash & hash; // Convert to 32-bit integer
 		}
-		
+
 		return Math.abs(hash);
 	}
 
@@ -182,28 +184,36 @@ export class HelperUtils {
 	 * Format bytes
 	 */
 	formatBytes(bytes, decimals = 2) {
-		if (bytes === 0) return '0 Bytes';
-		
+		if (bytes === 0) {
+			return '0 Bytes';
+		}
+
 		const k = 1024;
 		const dm = decimals < 0 ? 0 : decimals;
 		const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+
+		return (
+			parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+		);
 	}
 
 	/**
 	 * Check if object is empty
 	 */
 	isEmptyObject(obj) {
-		return obj && Object.keys(obj).length === 0 && obj.constructor === Object;
+		return (
+			obj && Object.keys(obj).length === 0 && obj.constructor === Object
+		);
 	}
 
 	/**
 	 * Capitalize first letter
 	 */
 	capitalize(str) {
-		if (!str || typeof str !== 'string') return '';
+		if (!str || typeof str !== 'string') {
+			return '';
+		}
 		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 
@@ -213,4 +223,4 @@ export class HelperUtils {
 	random(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
-} 
+}

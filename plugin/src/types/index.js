@@ -128,4 +128,4 @@
  * @property {boolean} isDesktop - Is desktop device
  */
 
-export {}; // Make this a module 
+export {}; // Make this a module

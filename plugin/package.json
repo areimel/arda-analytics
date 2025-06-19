@@ -1,14 +1,15 @@
 {
 	"name": "@arda-analytics/plugin",
 	"version": "0.1.0",
-	"description": "ARDA Analytics - Vanilla JavaScript analytics plugin with orchestrator architecture",
+	"description": "ARDA Analytics - Lightweight vanilla JavaScript analytics plugin with modular orchestrator architecture for tracking user interactions and events",
 	"main": "dist/index.js",
 	"module": "dist/index.esm.js",
 	"browser": "dist/arda-analytics.min.js",
 	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
-		"README.md"
+		"README.md",
+		"LICENSE"
 	],
 	"scripts": {
 		"dev": "webpack serve --mode development",
@@ -18,8 +19,17 @@
 		"build:types": "tsc --emitDeclarationOnly",
 		"clean": "rimraf dist",
 		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage",
 		"lint": "eslint src --ext .js,.ts",
-		"format": "prettier --write src/**/*.{js,ts}"
+		"lint:fix": "eslint src --ext .js,.ts --fix",
+		"format": "prettier --write src/**/*.{js,ts}",
+		"format:check": "prettier --check src/**/*.{js,ts}",
+		"prepare": "husky install",
+		"prepublishOnly": "npm run clean && npm run build && npm run test && npm run lint",
+		"version": "npm run build && git add -A dist",
+		"postversion": "git push && git push --tags",
+		"prepack": "npm run build"
 	},
 	"exports": {
 		".": {
@@ -38,9 +48,13 @@
 		"@types/jest": "^29.5.0",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
+		"babel-jest": "^29.7.0",
 		"babel-loader": "^9.1.0",
 		"eslint": "^8.57.0",
+		"husky": "^9.0.11",
 		"jest": "^29.7.0",
+		"jest-environment-jsdom": "^29.7.0",
+		"lint-staged": "^15.2.0",
 		"prettier": "^3.2.5",
 		"rimraf": "^5.0.5",
 		"terser-webpack-plugin": "^5.3.9",
@@ -53,9 +67,18 @@
 		"analytics",
 		"plugin",
 		"javascript",
-		"orchestrator",
 		"tracking",
-		"vanilla-js"
+		"events",
+		"orchestrator",
+		"vanilla-js",
+		"modular",
+		"lightweight",
+		"web-analytics",
+		"user-tracking",
+		"event-tracking",
+		"browser",
+		"frontend",
+		"typescript-definitions"
 	],
 	"author": "ARDA Analytics Team",
 	"license": "MIT",
@@ -64,7 +87,24 @@
 		"url": "https://github.com/arda-analytics/arda-analytics.git",
 		"directory": "plugin"
 	},
+	"bugs": {
+		"url": "https://github.com/arda-analytics/arda-analytics/issues"
+	},
+	"homepage": "https://github.com/arda-analytics/arda-analytics#readme",
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
+	"lint-staged": {
+		"src/**/*.{js,ts}": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"*.{json,md}": [
+			"prettier --write"
+		]
 	}
 } 

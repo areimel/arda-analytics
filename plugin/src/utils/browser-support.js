@@ -23,8 +23,10 @@ export class BrowserSupport {
 			arrowFunctions: this.hasFeature(() => () => {}),
 
 			// DOM APIs
-			addEventListener: typeof document !== 'undefined' && document.addEventListener,
-			querySelector: typeof document !== 'undefined' && document.querySelector,
+			addEventListener:
+				typeof document !== 'undefined' && document.addEventListener,
+			querySelector:
+				typeof document !== 'undefined' && document.querySelector,
 			localStorage: this.checkLocalStorage(),
 			sessionStorage: this.checkSessionStorage(),
 			fetch: typeof fetch !== 'undefined',
@@ -41,7 +43,7 @@ export class BrowserSupport {
 			webWorker: typeof Worker !== 'undefined',
 
 			// Additional features
-			promise: typeof Promise !== 'undefined'
+			promise: typeof Promise !== 'undefined',
 		};
 	}
 
@@ -50,9 +52,11 @@ export class BrowserSupport {
 	 * @returns {boolean} True if browser is supported
 	 */
 	checkMinimumSupport() {
-		return this.features.addEventListener && 
-			   this.features.querySelector && 
-			   this.features.console;
+		return (
+			this.features.addEventListener &&
+			this.features.querySelector &&
+			this.features.console
+		);
 	}
 
 	/**
@@ -113,7 +117,7 @@ export class BrowserSupport {
 			isFirefox: /Firefox/.test(ua),
 			isSafari: /Safari/.test(ua) && !/Chrome/.test(ua),
 			isMobile: /Mobile|Android|iPhone|iPad/.test(ua),
-			version: this.extractVersion(ua)
+			version: this.extractVersion(ua),
 		};
 	}
 
@@ -129,7 +133,7 @@ export class BrowserSupport {
 			/Safari\/(\d+)/,
 			/Edge\/(\d+)/,
 			/MSIE (\d+)/,
-			/rv:(\d+)/ // IE 11
+			/rv:(\d+)/, // IE 11
 		];
 
 		for (const pattern of patterns) {
@@ -148,17 +152,19 @@ export class BrowserSupport {
 	 */
 	createFallbackStorage() {
 		const memoryStorage = new Map();
-		
+
 		return {
-			getItem: (key) => memoryStorage.get(key) || null,
+			getItem: key => memoryStorage.get(key) || null,
 			setItem: (key, value) => memoryStorage.set(key, value),
-			removeItem: (key) => memoryStorage.delete(key),
+			removeItem: key => memoryStorage.delete(key),
 			clear: () => memoryStorage.clear(),
-			get length() { return memoryStorage.size; },
-			key: (index) => {
+			get length() {
+				return memoryStorage.size;
+			},
+			key: index => {
 				const keys = Array.from(memoryStorage.keys());
 				return keys[index] || null;
-			}
+			},
 		};
 	}
 
@@ -171,9 +177,9 @@ export class BrowserSupport {
 			return new Promise((resolve, reject) => {
 				const xhr = new XMLHttpRequest();
 				const method = options.method || 'GET';
-				
+
 				xhr.open(method, url);
-				
+
 				// Set headers
 				if (options.headers) {
 					Object.keys(options.headers).forEach(key => {
@@ -192,7 +198,8 @@ export class BrowserSupport {
 						status: xhr.status,
 						statusText: xhr.statusText,
 						text: () => Promise.resolve(xhr.responseText),
-						json: () => Promise.resolve(JSON.parse(xhr.responseText))
+						json: () =>
+							Promise.resolve(JSON.parse(xhr.responseText)),
 					});
 				};
 
@@ -221,85 +228,97 @@ export class BrowserSupport {
 				warn: () => {},
 				error: () => {},
 				info: () => {},
-				debug: () => {}
+				debug: () => {},
 			};
 		}
 
 		// Polyfill Promise for older browsers
 		if (!this.features.es6Promise) {
 			// Simple Promise polyfill (very basic)
-			window.Promise = window.Promise || class SimplePromise {
-				constructor(executor) {
-					this.state = 'pending';
-					this.value = undefined;
-					this.handlers = [];
+			window.Promise =
+				window.Promise ||
+				class SimplePromise {
+					constructor(executor) {
+						this.state = 'pending';
+						this.value = undefined;
+						this.handlers = [];
 
-					const resolve = (value) => {
-						if (this.state === 'pending') {
-							this.state = 'fulfilled';
-							this.value = value;
-							this.handlers.forEach(handler => handler.onFulfilled(value));
-						}
-					};
-
-					const reject = (reason) => {
-						if (this.state === 'pending') {
-							this.state = 'rejected';
-							this.value = reason;
-							this.handlers.forEach(handler => handler.onRejected(reason));
-						}
-					};
-
-					try {
-						executor(resolve, reject);
-					} catch (error) {
-						reject(error);
-					}
-				}
-
-				then(onFulfilled, onRejected) {
-					return new SimplePromise((resolve, reject) => {
-						const handler = {
-							onFulfilled: (value) => {
-								try {
-									const result = onFulfilled ? onFulfilled(value) : value;
-									resolve(result);
-								} catch (error) {
-									reject(error);
-								}
-							},
-							onRejected: (reason) => {
-								try {
-									const result = onRejected ? onRejected(reason) : reason;
-									reject(result);
-								} catch (error) {
-									reject(error);
-								}
+						const resolve = value => {
+							if (this.state === 'pending') {
+								this.state = 'fulfilled';
+								this.value = value;
+								this.handlers.forEach(handler =>
+									handler.onFulfilled(value),
+								);
 							}
 						};
 
-						if (this.state === 'fulfilled') {
-							handler.onFulfilled(this.value);
-						} else if (this.state === 'rejected') {
-							handler.onRejected(this.value);
-						} else {
-							this.handlers.push(handler);
+						const reject = reason => {
+							if (this.state === 'pending') {
+								this.state = 'rejected';
+								this.value = reason;
+								this.handlers.forEach(handler =>
+									handler.onRejected(reason),
+								);
+							}
+						};
+
+						try {
+							executor(resolve, reject);
+						} catch (error) {
+							reject(error);
 						}
-					});
-				}
+					}
 
-				catch(onRejected) {
-					return this.then(null, onRejected);
-				}
+					then(onFulfilled, onRejected) {
+						return new SimplePromise((resolve, reject) => {
+							const handler = {
+								onFulfilled: value => {
+									try {
+										const result = onFulfilled
+											? onFulfilled(value)
+											: value;
+										resolve(result);
+									} catch (error) {
+										reject(error);
+									}
+								},
+								onRejected: reason => {
+									try {
+										const result = onRejected
+											? onRejected(reason)
+											: reason;
+										reject(result);
+									} catch (error) {
+										reject(error);
+									}
+								},
+							};
 
-				static resolve(value) {
-					return new SimplePromise(resolve => resolve(value));
-				}
+							if (this.state === 'fulfilled') {
+								handler.onFulfilled(this.value);
+							} else if (this.state === 'rejected') {
+								handler.onRejected(this.value);
+							} else {
+								this.handlers.push(handler);
+							}
+						});
+					}
 
-				static reject(reason) {
-					return new SimplePromise((resolve, reject) => reject(reason));
-				}
-			};
+					catch(onRejected) {
+						return this.then(null, onRejected);
+					}
+
+					static resolve(value) {
+						return new SimplePromise(resolve => resolve(value));
+					}
+
+					static reject(reason) {
+						return new SimplePromise((resolve, reject) =>
+							reject(reason),
+						);
+					}
+				};
 		}
 	}
 
@@ -309,24 +328,26 @@ export class BrowserSupport {
 	 */
 	getDegradationStrategy() {
 		const browser = this.getBrowserInfo();
-		
+
 		// Severe degradation for very old browsers
 		if (browser.isIE && parseInt(browser.version) < 10) {
 			return {
 				level: 'severe',
 				features: ['basic_tracking_only'],
-				disabled: ['storage', 'api', 'auto_tracking', 'events']
+				disabled: ['storage', 'api', 'auto_tracking', 'events'],
 			};
 		}
 
 		// Moderate degradation for older browsers
-		if ((browser.isIE && parseInt(browser.version) < 12) || 
+		if (
+			(browser.isIE && parseInt(browser.version) < 12) ||
 			(browser.isChrome && parseInt(browser.version) < 40) ||
-			(browser.isFirefox && parseInt(browser.version) < 35)) {
+			(browser.isFirefox && parseInt(browser.version) < 35)
+		) {
 			return {
 				level: 'moderate',
 				features: ['basic_tracking', 'simple_storage'],
-				disabled: ['advanced_events', 'modern_apis']
+				disabled: ['advanced_events', 'modern_apis'],
 			};
 		}
 
@@ -334,7 +355,7 @@ export class BrowserSupport {
 		return {
 			level: 'none',
 			features: ['all'],
-			disabled: []
+			disabled: [],
 		};
 	}
 
@@ -344,12 +365,12 @@ export class BrowserSupport {
 	logSupportInfo() {
 		const browser = this.getBrowserInfo();
 		const strategy = this.getDegradationStrategy();
-		
+
 		console.log('ARDA Analytics Browser Support:', {
 			supported: this.isSupported,
 			browser: browser,
 			features: this.features,
-			degradation: strategy
+			degradation: strategy,
 		});
 	}
 
@@ -361,4 +382,4 @@ export class BrowserSupport {
 		const browser = this.getBrowserInfo();
 		return browser.isIE || !this.isSupported;
 	}
-} 
+}

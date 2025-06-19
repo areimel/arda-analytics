@@ -162,7 +162,7 @@ declare class ARDAAnalytics {
 	track(
 		eventName: string,
 		properties?: ARDAAnalytics.EventProperties,
-		options?: ARDAAnalytics.TrackingOptions
+		options?: ARDAAnalytics.TrackingOptions,
 	): string | null;
 
 	/**
@@ -251,4 +251,4 @@ declare global {
 	interface Window {
 		ARDAAnalytics: typeof ARDAAnalytics;
 	}
-} 
+}

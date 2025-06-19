@@ -21,14 +21,16 @@ class ARDAAnalytics {
 		try {
 			// Check browser support first
 			this.browserSupport = new BrowserSupport();
-			
+
 			// Apply fallbacks for unsupported browsers
 			this.browserSupport.applyFallbacks();
-			
+
 			// Check if browser is minimally supported
 			if (!this.browserSupport.isSupported) {
-				console.warn('ARDA Analytics: Browser not fully supported, some features may be disabled');
-				
+				console.warn(
+					'ARDA Analytics: Browser not fully supported, some features may be disabled',
+				);
+
 				// Use degraded mode for unsupported browsers
 				if (this.browserSupport.shouldDegrade()) {
 					return this.initDegradedMode(options);
@@ -56,7 +58,7 @@ class ARDAAnalytics {
 			this.init();
 		} catch (error) {
 			console.error('ARDA Analytics constructor failed:', error);
-			
+
 			// Fallback to degraded mode on initialization error
 			return this.initDegradedMode(options);
 		}
@@ -67,21 +69,24 @@ class ARDAAnalytics {
 	 */
 	initDegradedMode(options = {}) {
 		console.log('ARDA Analytics: Running in degraded mode');
-		
+
 		this.isDegraded = true;
 		this.isInitialized = true;
 		this.version = '0.1.0';
-		this.config = { autoTrack: { pageViews: false }, storage: { enabled: false } };
-		
+		this.config = {
+			autoTrack: { pageViews: false },
+			storage: { enabled: false },
+		};
+
 		// Provide minimal functionality
 		this.track = (eventName, properties) => {
 			console.log('ARDA Analytics (degraded):', eventName, properties);
 		};
-		
+
 		this.getVersion = () => this.version;
 		this.isReady = () => this.isInitialized;
 		this.destroy = () => {};
-		
+
 		return this;
 	}
 
@@ -92,7 +97,9 @@ class ARDAAnalytics {
 		try {
 			// Check if Do Not Track is enabled
 			if (this.config.isDNTEnabled()) {
-				console.log('ARDA Analytics: Do Not Track detected, analytics disabled');
+				console.log(
+					'ARDA Analytics: Do Not Track detected, analytics disabled',
+				);
 				return;
 			}
 
@@ -113,7 +120,7 @@ class ARDAAnalytics {
 				timestamp: Date.now(),
 				version: this.version,
 				config: this.config.getAll(),
-				browserSupport: this.browserSupport.features
+				browserSupport: this.browserSupport.features,
 			});
 
 			// Log browser support info in debug mode
@@ -121,10 +128,12 @@ class ARDAAnalytics {
 				this.browserSupport.logSupportInfo();
 			}
 
-			console.log(`ARDA Analytics v${this.version} initialized successfully`);
+			console.log(
+				`ARDA Analytics v${this.version} initialized successfully`,
+			);
 		} catch (error) {
 			console.error('ARDA Analytics initialization failed:', error);
-			
+
 			// Try to continue with degraded functionality
 			this.handleInitializationError(error);
 		}
@@ -135,22 +144,35 @@ class ARDAAnalytics {
 	 */
 	applyBrowserSpecificConfig() {
 		// Disable storage if not available
-		if (!this.browserSupport.features.localStorage && !this.browserSupport.features.sessionStorage) {
+		if (
+			!this.browserSupport.features.localStorage &&
+			!this.browserSupport.features.sessionStorage
+		) {
 			this.config.set('storage.enabled', false);
-			console.warn('ARDA Analytics: Storage disabled due to browser limitations');
+			console.warn(
+				'ARDA Analytics: Storage disabled due to browser limitations',
+			);
 		}
 
 		// Use memory storage as fallback
-		if (!this.browserSupport.features.localStorage && this.browserSupport.features.sessionStorage) {
+		if (
+			!this.browserSupport.features.localStorage &&
+			this.browserSupport.features.sessionStorage
+		) {
 			this.config.set('storage.type', 'sessionStorage');
-		} else if (!this.browserSupport.features.localStorage && !this.browserSupport.features.sessionStorage) {
+		} else if (
+			!this.browserSupport.features.localStorage &&
+			!this.browserSupport.features.sessionStorage
+		) {
 			this.config.set('storage.type', 'memory');
 		}
 
 		// Disable API if fetch is not available and no polyfill was applied
 		if (!this.browserSupport.features.fetch && !window.fetch) {
 			this.config.set('api.enabled', false);
-			console.warn('ARDA Analytics: API disabled due to lack of fetch support');
+			console.warn(
+				'ARDA Analytics: API disabled due to lack of fetch support',
+			);
 		}
 	}
 
@@ -164,7 +186,7 @@ class ARDAAnalytics {
 				this.events.emit('error', {
 					type: 'initialization_error',
 					error: error.message,
-					timestamp: Date.now()
+					timestamp: Date.now(),
 				});
 			}
 
@@ -172,9 +194,14 @@ class ARDAAnalytics {
 			this.isDegraded = true;
 			this.isInitialized = true;
 
-			console.log('ARDA Analytics: Continuing in degraded mode after initialization error');
+			console.log(
+				'ARDA Analytics: Continuing in degraded mode after initialization error',
+			);
 		} catch (secondaryError) {
-			console.error('ARDA Analytics: Complete initialization failure:', secondaryError);
+			console.error(
+				'ARDA Analytics: Complete initialization failure:',
+				secondaryError,
+			);
 		}
 	}
 
@@ -183,12 +210,12 @@ class ARDAAnalytics {
 	 */
 	setupInternalEvents() {
 		// Listen for track events to handle storage and API
-		this.events.on('track', (eventData) => {
+		this.events.on('track', eventData => {
 			this.handleTrackEvent(eventData);
 		});
 
 		// Listen for errors
-		this.events.on('error', (errorData) => {
+		this.events.on('error', errorData => {
 			this.handleError(errorData);
 		});
 	}
@@ -204,7 +231,7 @@ class ARDAAnalytics {
 
 		// Auto-track clicks
 		if (this.config.get('autoTrack.clicks', false)) {
-			this.dom.onClick((event) => {
+			this.dom.onClick(event => {
 				this.handleAutoClick(event);
 			});
 		}
@@ -246,10 +273,10 @@ class ARDAAnalytics {
 					timestamp: Date.now(),
 					...this.dom.getPageInfo(),
 					userAgent: navigator.userAgent,
-					sessionId: this.getSessionId()
+					sessionId: this.getSessionId(),
 				},
 				options,
-				id: this.helpers.generateId('event')
+				id: this.helpers.generateId('event'),
 			};
 
 			// Emit track event for internal processing
@@ -261,7 +288,7 @@ class ARDAAnalytics {
 				type: 'track_error',
 				error,
 				eventName,
-				properties
+				properties,
 			});
 			console.error('Failed to track event:', error);
 			return null;
@@ -306,7 +333,7 @@ class ARDAAnalytics {
 			page: pageInfo.pathname,
 			title: pageInfo.title,
 			referrer: pageInfo.referrer,
-			viewport: this.dom.getViewportSize()
+			viewport: this.dom.getViewportSize(),
 		});
 	}
 
@@ -316,14 +343,14 @@ class ARDAAnalytics {
 	 */
 	handleAutoClick(event) {
 		const elementData = this.dom.getElementData(event.target);
-		
+
 		this.track('click', {
 			element: elementData.tagName,
 			text: elementData.text,
 			id: elementData.id,
 			classes: elementData.classes,
 			href: elementData.href,
-			position: elementData.position
+			position: elementData.position,
 		});
 	}
 
@@ -342,7 +369,7 @@ class ARDAAnalytics {
 				this.storage.store({
 					event: 'arda_error',
 					properties: errorData,
-					timestamp: Date.now()
+					timestamp: Date.now(),
 				});
 			} catch (error) {
 				// Silent fail for error storage
@@ -369,7 +396,7 @@ class ARDAAnalytics {
 	}
 
 	// Public API methods
-	
+
 	/**
 	 * Get plugin configuration
 	 * @param {string} key - Configuration key
@@ -377,7 +404,9 @@ class ARDAAnalytics {
 	 * @returns {*} Configuration value
 	 */
 	getConfig(key, defaultValue) {
-		if (this.isDegraded) return defaultValue;
+		if (this.isDegraded) {
+			return defaultValue;
+		}
 		return this.config.get(key, defaultValue);
 	}
 
@@ -387,7 +416,9 @@ class ARDAAnalytics {
 	 * @param {*} value - Configuration value
 	 */
 	setConfig(key, value) {
-		if (this.isDegraded) return;
+		if (this.isDegraded) {
+			return;
+		}
 		this.config.set(key, value);
 	}
 
@@ -397,7 +428,9 @@ class ARDAAnalytics {
 	 * @param {Function} callback - Event callback
 	 */
 	on(event, callback) {
-		if (this.isDegraded) return;
+		if (this.isDegraded) {
+			return;
+		}
 		this.events.on(event, callback);
 	}
 
@@ -407,7 +440,9 @@ class ARDAAnalytics {
 	 * @param {Function} callback - Event callback
 	 */
 	off(event, callback) {
-		if (this.isDegraded) return;
+		if (this.isDegraded) {
+			return;
+		}
 		this.events.off(event, callback);
 	}
 
@@ -441,7 +476,9 @@ class ARDAAnalytics {
 	 * @returns {Array} Array of stored events
 	 */
 	getStoredEvents(limit) {
-		if (this.isDegraded || !this.storage) return [];
+		if (this.isDegraded || !this.storage) {
+			return [];
+		}
 		return this.storage.retrieve(limit);
 	}
 
@@ -449,7 +486,9 @@ class ARDAAnalytics {
 	 * Clear stored events
 	 */
 	clearStoredEvents() {
-		if (this.isDegraded || !this.storage) return false;
+		if (this.isDegraded || !this.storage) {
+			return false;
+		}
 		return this.storage.clear();
 	}
 
@@ -464,17 +503,23 @@ class ARDAAnalytics {
 			degraded: this.isDegraded,
 			startTime: this.startTime,
 			uptime: Date.now() - this.startTime,
-			browserSupport: this.browserSupport ? this.browserSupport.features : {},
+			browserSupport: this.browserSupport
+				? this.browserSupport.features
+				: {},
 			config: this.config ? this.config.getAll() : {},
 			events: this.events ? this.events.getDebugInfo() : {},
-			storage: this.storage ? {
-				size: this.storage.getSize(),
-				available: this.storage.isAvailable()
-			} : {},
-			api: this.api ? {
-				queueSize: this.api.getQueueSize(),
-				online: this.api.isOnline()
-			} : {}
+			storage: this.storage
+				? {
+						size: this.storage.getSize(),
+						available: this.storage.isAvailable(),
+					}
+				: {},
+			api: this.api
+				? {
+						queueSize: this.api.getQueueSize(),
+						online: this.api.isOnline(),
+					}
+				: {},
 		};
 	}
 
@@ -482,8 +527,12 @@ class ARDAAnalytics {
 	 * Destroy the plugin instance
 	 */
 	destroy() {
-		if (this.events) this.events.removeAllListeners();
-		if (this.api) this.api.clearQueue();
+		if (this.events) {
+			this.events.removeAllListeners();
+		}
+		if (this.api) {
+			this.api.clearQueue();
+		}
 		this.isInitialized = false;
 		console.log('ARDA Analytics destroyed');
 	}
@@ -503,4 +552,4 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // ARDA Analytics main entry point
-console.log('ARDA Analytics loaded'); 
+console.log('ARDA Analytics loaded');

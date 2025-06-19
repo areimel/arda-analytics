@@ -69,10 +69,7 @@ export class ValidationUtils {
 			return '';
 		}
 
-		return str
-			.trim()
-			.substring(0, maxLength)
-			.replace(/[<>]/g, '');
+		return str.trim().substring(0, maxLength).replace(/[<>]/g, '');
 	}
 
 	/**
@@ -106,7 +103,9 @@ export class ValidationUtils {
 	}
 
 	isObject(value) {
-		return value !== null && typeof value === 'object' && !Array.isArray(value);
+		return (
+			value !== null && typeof value === 'object' && !Array.isArray(value)
+		);
 	}
 
 	isArray(value) {
@@ -116,4 +115,4 @@ export class ValidationUtils {
 	isFunction(value) {
 		return typeof value === 'function';
 	}
-} 
+}

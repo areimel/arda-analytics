@@ -37,4 +37,4 @@
  * @property {string} referrer - Referrer URL
  */
 
-export {}; // Make this a module 
+export {}; // Make this a module

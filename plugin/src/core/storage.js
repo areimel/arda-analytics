@@ -18,10 +18,10 @@ export class StorageManager {
 				return window.sessionStorage;
 			case 'memory':
 				return {
-					getItem: (key) => this.memoryStorage.get(key) || null,
+					getItem: key => this.memoryStorage.get(key) || null,
 					setItem: (key, value) => this.memoryStorage.set(key, value),
-					removeItem: (key) => this.memoryStorage.delete(key),
-					clear: () => this.memoryStorage.clear()
+					removeItem: key => this.memoryStorage.delete(key),
+					clear: () => this.memoryStorage.clear(),
 				};
 			default:
 				throw new Error(`Unknown storage type: ${this.storageType}`);
@@ -34,11 +34,11 @@ export class StorageManager {
 			const key = `${this.prefix}events`;
 			const existingData = storage.getItem(key);
 			const events = existingData ? JSON.parse(existingData) : [];
-			
+
 			events.push({
 				...eventData,
 				id: this.generateEventId(),
-				storedAt: Date.now()
+				storedAt: Date.now(),
 			});
 
 			// Keep only the last maxEvents
@@ -59,9 +59,11 @@ export class StorageManager {
 			const storage = this.getStorage();
 			const key = `${this.prefix}events`;
 			const data = storage.getItem(key);
-			
-			if (!data) return [];
-			
+
+			if (!data) {
+				return [];
+			}
+
 			const events = JSON.parse(data);
 			return limit ? events.slice(-limit) : events;
 		} catch (error) {
@@ -102,4 +104,4 @@ export class StorageManager {
 			return false;
 		}
 	}
-} 
+}

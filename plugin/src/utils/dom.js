@@ -25,7 +25,7 @@ export class DOMUtils {
 			text: this.getElementText(element),
 			href: element.href || null,
 			dataset: { ...element.dataset },
-			position: this.getElementPosition(element)
+			position: this.getElementPosition(element),
 		};
 	}
 
@@ -45,7 +45,7 @@ export class DOMUtils {
 			x: Math.round(rect.left),
 			y: Math.round(rect.top),
 			width: Math.round(rect.width),
-			height: Math.round(rect.height)
+			height: Math.round(rect.height),
 		};
 	}
 
@@ -68,7 +68,7 @@ export class DOMUtils {
 	getViewportSize() {
 		return {
 			width: window.innerWidth,
-			height: window.innerHeight
+			height: window.innerHeight,
 		};
 	}
 
@@ -78,7 +78,7 @@ export class DOMUtils {
 	getScrollPosition() {
 		return {
 			x: window.pageXOffset || document.documentElement.scrollLeft,
-			y: window.pageYOffset || document.documentElement.scrollTop
+			y: window.pageYOffset || document.documentElement.scrollTop,
 		};
 	}
 
@@ -92,7 +92,7 @@ export class DOMUtils {
 			search: window.location.search,
 			hash: window.location.hash,
 			title: document.title,
-			referrer: document.referrer
+			referrer: document.referrer,
 		};
 	}
 
@@ -130,4 +130,4 @@ export class DOMUtils {
 			return [];
 		}
 	}
-} 
+}

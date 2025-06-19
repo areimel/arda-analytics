@@ -21,11 +21,11 @@ export class APIManager {
 			return response.ok;
 		} catch (error) {
 			console.error('Failed to send event to API:', error);
-			
+
 			// Add to queue for retry
 			this.queue.push(eventData);
 			this.processQueue();
-			
+
 			return false;
 		}
 	}
@@ -39,14 +39,14 @@ export class APIManager {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					...this.getAuthHeaders()
+					...this.getAuthHeaders(),
 				},
 				body: JSON.stringify(data),
-				signal: controller.signal
+				signal: controller.signal,
 			});
 
 			clearTimeout(timeoutId);
-			
+
 			if (!response.ok && attempt < this.retryAttempts) {
 				await this.delay(Math.pow(2, attempt) * 1000); // Exponential backoff
 				return this.makeRequest(data, attempt + 1);
@@ -55,19 +55,19 @@ export class APIManager {
 			return response;
 		} catch (error) {
 			clearTimeout(timeoutId);
-			
+
 			if (attempt < this.retryAttempts) {
 				await this.delay(Math.pow(2, attempt) * 1000);
 				return this.makeRequest(data, attempt + 1);
 			}
-			
+
 			throw error;
 		}
 	}
 
 	getAuthHeaders() {
 		const apiKey = this.config.get('api.apiKey');
-		return apiKey ? { 'Authorization': `Bearer ${apiKey}` } : {};
+		return apiKey ? { Authorization: `Bearer ${apiKey}` } : {};
 	}
 
 	async processQueue() {
@@ -76,10 +76,10 @@ export class APIManager {
 		}
 
 		this.sending = true;
-		
+
 		while (this.queue.length > 0) {
 			const eventData = this.queue.shift();
-			
+
 			try {
 				await this.send(eventData);
 			} catch (error) {
@@ -88,7 +88,7 @@ export class APIManager {
 				break;
 			}
 		}
-		
+
 		this.sending = false;
 	}
 
@@ -107,4 +107,4 @@ export class APIManager {
 	isOnline() {
 		return navigator.onLine !== false;
 	}
-} 
+}
