@@ -67,7 +67,7 @@ class ARDAAnalytics {
 	/**
 	 * Initialize degraded mode for unsupported browsers
 	 */
-	initDegradedMode(options = {}) {
+	initDegradedMode(_options = {}) {
 		console.log('ARDA Analytics: Running in degraded mode');
 
 		this.isDegraded = true;

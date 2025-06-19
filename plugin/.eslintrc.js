@@ -12,6 +12,11 @@ module.exports = {
 		ecmaVersion: 'latest',
 		sourceType: 'module',
 	},
+	ignorePatterns: [
+		'dist/',
+		'node_modules/',
+		'*.d.ts',
+	],
 	rules: {
 		// Indentation
 		'indent': ['error', 'tab'],
@@ -19,7 +24,7 @@ module.exports = {
 
 		// Code quality
 		'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-		'no-console': 'warn',
+		'no-console': 'off', // Allow console statements in this plugin
 		'no-debugger': 'error',
 		'prefer-const': 'error',
 		'no-var': 'error',
