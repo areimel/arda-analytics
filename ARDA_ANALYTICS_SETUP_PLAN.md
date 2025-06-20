@@ -70,40 +70,40 @@ Building a vanilla JavaScript analytics plugin with orchestrator architecture th
 ---
 
 ## Phase 4: Demo Website Setup (React.js)
-- [ ] Initialize React application in `website/` directory
-	- [ ] Create React app with modern tooling (Vite or Create React App)
-	- [ ] Configure build output to separate `dist/` directory
-	- [ ] Set up routing with React Router for multiple pages
-	- [ ] Configure Tailwind CSS with Shadcn-ui component library
-	- [ ] Set up dark/light mode toggle with theme persistence
-	- [ ] Configure tech-y aesthetic with monospace fonts (JetBrains Mono, Fira Code, or similar)
-	- [ ] Add responsive design framework
+- [x] Initialize React application in `website/` directory
+	- [x] Create React app with modern tooling (Vite or Create React App)
+	- [x] Configure build output to separate `dist/` directory
+	- [x] Set up routing with React Router for multiple pages
+	- [x] Configure Tailwind CSS with Shadcn-ui component library
+	- [x] Set up dark/light mode toggle with theme persistence
+	- [x] Configure tech-y aesthetic with monospace fonts (JetBrains Mono, Fira Code, or similar)
+	- [x] Add responsive design framework
 
-- [ ] Create website page structure
-	- [ ] Marketing homepage (`/`)
-		- [ ] Hero section with plugin overview
-		- [ ] Features showcase section
-		- [ ] Getting started/installation section
-		- [ ] Code examples section
-		- [ ] Call-to-action for documentation
-	- [ ] Demo pages (`/demo/*`)
-		- [ ] Interactive demo playground
+- [x] Create website page structure
+	- [x] Marketing homepage (`/`)
+		- [x] Hero section with plugin overview
+		- [x] Features showcase section
+		- [x] Getting started/installation section
+		- [x] Code examples section
+		- [x] Call-to-action for documentation
+	- [x] Demo pages (`/demo/*`)
+		- [x] Interactive demo playground
 		- [ ] Feature-specific demo pages
 		- [ ] Live code examples with syntax highlighting
-		- [ ] Real-time plugin functionality showcase
-	- [ ] Documentation pages (`/docs/*`)
-		- [ ] API reference documentation
+		- [x] Real-time plugin functionality showcase
+	- [x] Documentation pages (`/docs/*`)
+		- [x] API reference documentation
 		- [ ] Configuration options guide
 		- [ ] Integration examples for different frameworks
 		- [ ] Troubleshooting guide
 
-- [ ] Website functionality
+- [x] Website functionality
 	- [ ] Integrate the actual plugin for live demonstrations
 	- [ ] Add syntax highlighting for code examples (Prism.js or highlight.js) with dark/light theme support
 	- [ ] Implement search functionality for documentation
-	- [ ] Add responsive navigation with dark/light mode toggle
-	- [ ] Configure Shadcn-ui components for consistent tech aesthetic
-	- [ ] Set up monospace font stack for code blocks and technical elements
+	- [x] Add responsive navigation with dark/light mode toggle
+	- [x] Configure Shadcn-ui components for consistent tech aesthetic
+	- [x] Set up monospace font stack for code blocks and technical elements
 	- [ ] Configure meta tags and SEO optimization
 
 ---
