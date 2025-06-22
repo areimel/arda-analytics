@@ -3,16 +3,16 @@ import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Menu, X, Code2 } from 'lucide-react'
 import { useState } from 'react'
-
-const navigation = [
-	{ name: 'Home', href: '/' },
-	{ name: 'Demo', href: '/demo' },
-	{ name: 'Docs', href: '/docs' },
-]
+import { getBrandInfo, getNavigation, getHeaderCTA } from '@/lib/content'
 
 export function Navbar() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const location = useLocation()
+	
+	// Get content from JSON
+	const brandInfo = getBrandInfo()
+	const navigation = getNavigation()
+	const headerCTA = getHeaderCTA()
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -20,7 +20,7 @@ export function Navbar() {
 				<div className="flex lg:flex-1">
 					<Link to="/" className="-m-1.5 p-1.5 flex items-center space-x-2">
 						<Code2 className="h-8 w-8" />
-						<span className="font-mono text-xl font-bold">ARDA Analytics</span>
+						<span className="font-mono text-xl font-bold">{brandInfo.logoText}</span>
 					</Link>
 				</div>
 				<div className="flex lg:hidden">
@@ -50,13 +50,27 @@ export function Navbar() {
 				</div>
 				<div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:space-x-4">
 					<ThemeToggle />
-					<Button asChild variant="outline">
-						<a href="https://github.com" target="_blank" rel="noopener noreferrer">
-							GitHub
-						</a>
+					<Button asChild variant={headerCTA.secondary.variant}>
+						{headerCTA.secondary.external ? (
+							<a href={headerCTA.secondary.href} target="_blank" rel="noopener noreferrer">
+								{headerCTA.secondary.text}
+							</a>
+						) : (
+							<Link to={headerCTA.secondary.href}>
+								{headerCTA.secondary.text}
+							</Link>
+						)}
 					</Button>
-					<Button asChild>
-						<a href="#get-started">Get Started</a>
+					<Button asChild variant={headerCTA.primary.variant}>
+						{headerCTA.primary.external ? (
+							<a href={headerCTA.primary.href} target="_blank" rel="noopener noreferrer">
+								{headerCTA.primary.text}
+							</a>
+						) : (
+							<a href={headerCTA.primary.href}>
+								{headerCTA.primary.text}
+							</a>
+						)}
 					</Button>
 				</div>
 			</nav>
@@ -68,7 +82,7 @@ export function Navbar() {
 						<div className="flex items-center justify-between">
 							<Link to="/" className="-m-1.5 p-1.5 flex items-center space-x-2">
 								<Code2 className="h-8 w-8" />
-								<span className="font-mono text-xl font-bold">ARDA Analytics</span>
+								<span className="font-mono text-xl font-bold">{brandInfo.logoText}</span>
 							</Link>
 							<Button
 								variant="ghost"
@@ -102,13 +116,27 @@ export function Navbar() {
 										<span className="text-sm font-medium">Theme</span>
 										<ThemeToggle />
 									</div>
-									<Button asChild variant="outline" className="w-full">
-										<a href="https://github.com" target="_blank" rel="noopener noreferrer">
-											GitHub
-										</a>
+									<Button asChild variant={headerCTA.secondary.variant} className="w-full">
+										{headerCTA.secondary.external ? (
+											<a href={headerCTA.secondary.href} target="_blank" rel="noopener noreferrer">
+												{headerCTA.secondary.text}
+											</a>
+										) : (
+											<Link to={headerCTA.secondary.href}>
+												{headerCTA.secondary.text}
+											</Link>
+										)}
 									</Button>
-									<Button asChild className="w-full">
-										<a href="#get-started">Get Started</a>
+									<Button asChild variant={headerCTA.primary.variant} className="w-full">
+										{headerCTA.primary.external ? (
+											<a href={headerCTA.primary.href} target="_blank" rel="noopener noreferrer">
+												{headerCTA.primary.text}
+											</a>
+										) : (
+											<a href={headerCTA.primary.href}>
+												{headerCTA.primary.text}
+											</a>
+										)}
 									</Button>
 								</div>
 							</div>

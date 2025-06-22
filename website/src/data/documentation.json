@@ -1,0 +1,375 @@
+{
+  "installation": {
+    "methods": [
+      {
+        "id": "npm",
+        "title": "NPM Installation",
+        "description": "Install via NPM for module-based projects",
+        "icon": "package",
+        "steps": [
+          {
+            "step": 1,
+            "title": "Install the package",
+            "code": "npm install arda-analytics\n# or with pnpm\npnpm add arda-analytics\n# or with yarn\nyarn add arda-analytics",
+            "language": "bash"
+          },
+          {
+            "step": 2,
+            "title": "Import and initialize",
+            "code": "import { ArdalAnalytics } from 'arda-analytics';\n\nconst analytics = new ArdalAnalytics({\n  apiKey: 'your-api-key',\n  trackPageViews: true,\n  enableDebug: false\n});\n\nanalytics.init();",
+            "language": "javascript"
+          }
+        ]
+      },
+      {
+        "id": "cdn",
+        "title": "CDN Installation",
+        "description": "Quick setup via CDN for any website",
+        "icon": "globe",
+        "steps": [
+          {
+            "step": 1,
+            "title": "Add the script tag",
+            "code": "<script src=\"https://cdn.jsdelivr.net/npm/arda-analytics@latest/dist/arda-analytics.min.js\"></script>",
+            "language": "html"
+          },
+          {
+            "step": 2,
+            "title": "Initialize the plugin",
+            "code": "<script>\n  window.ArdalAnalytics.init({\n    apiKey: 'your-api-key',\n    trackPageViews: true,\n    enableDebug: false\n  });\n</script>",
+            "language": "html"
+          }
+        ]
+      },
+      {
+        "id": "self-hosted",
+        "title": "Self-Hosted",
+        "description": "Download and host the files yourself",
+        "icon": "server",
+        "steps": [
+          {
+            "step": 1,
+            "title": "Download the latest release",
+            "code": "# Download from GitHub releases\nwget https://github.com/your-org/arda-analytics/releases/latest/download/arda-analytics.min.js",
+            "language": "bash"
+          },
+          {
+            "step": 2,
+            "title": "Include in your HTML",
+            "code": "<script src=\"/path/to/arda-analytics.min.js\"></script>\n<script>\n  window.ArdalAnalytics.init({\n    apiKey: 'your-api-key'\n  });\n</script>",
+            "language": "html"
+          }
+        ]
+      }
+    ]
+  },
+  "frameworks": {
+    "react": {
+      "title": "React Integration",
+      "description": "Complete guide for integrating ARDA Analytics with React applications",
+      "icon": "react",
+      "difficulty": "Easy",
+      "examples": [
+        {
+          "title": "Basic Setup",
+          "description": "Initialize ARDA Analytics in your React app",
+          "code": "// src/analytics.js\nimport { ArdalAnalytics } from 'arda-analytics';\n\nconst analytics = new ArdalAnalytics({\n  apiKey: process.env.REACT_APP_ARDA_API_KEY,\n  trackPageViews: true,\n  enableDebug: process.env.NODE_ENV === 'development'\n});\n\nexport default analytics;\n\n// src/App.js\nimport { useEffect } from 'react';\nimport analytics from './analytics';\n\nfunction App() {\n  useEffect(() => {\n    analytics.init();\n  }, []);\n\n  return (\n    <div className=\"App\">\n      {/* Your app content */}\n    </div>\n  );\n}\n\nexport default App;",
+          "language": "javascript"
+        },
+        {
+          "title": "Custom Hook",
+          "description": "Create a custom hook for analytics tracking",
+          "code": "// hooks/useAnalytics.js\nimport { useCallback } from 'react';\nimport analytics from '../analytics';\n\nexport const useAnalytics = () => {\n  const track = useCallback((event, data = {}) => {\n    analytics.track(event, data);\n  }, []);\n\n  const identify = useCallback((userId, traits = {}) => {\n    analytics.identify(userId, traits);\n  }, []);\n\n  const page = useCallback((name, properties = {}) => {\n    analytics.page(name, properties);\n  }, []);\n\n  return { track, identify, page };\n};\n\n// Usage in component\nimport { useAnalytics } from '../hooks/useAnalytics';\n\nfunction Button() {\n  const { track } = useAnalytics();\n\n  const handleClick = () => {\n    track('button_clicked', {\n      button_id: 'cta-primary',\n      page: window.location.pathname\n    });\n  };\n\n  return <button onClick={handleClick}>Click me</button>;\n}",
+          "language": "javascript"
+        }
+      ]
+    },
+    "vue": {
+      "title": "Vue.js Integration",
+      "description": "Step-by-step guide for Vue.js applications",
+      "icon": "vue",
+      "difficulty": "Easy",
+      "examples": [
+        {
+          "title": "Vue 3 Composition API",
+          "description": "Using ARDA Analytics with Vue 3",
+          "code": "// src/composables/useAnalytics.js\nimport { ArdalAnalytics } from 'arda-analytics';\nimport { ref, onMounted } from 'vue';\n\nconst analytics = new ArdalAnalytics({\n  apiKey: import.meta.env.VITE_ARDA_API_KEY,\n  trackPageViews: true\n});\n\nexport function useAnalytics() {\n  const isInitialized = ref(false);\n\n  onMounted(async () => {\n    await analytics.init();\n    isInitialized.value = true;\n  });\n\n  const track = (event, data = {}) => {\n    if (isInitialized.value) {\n      analytics.track(event, data);\n    }\n  };\n\n  return {\n    track,\n    identify: analytics.identify.bind(analytics),\n    page: analytics.page.bind(analytics)\n  };\n}\n\n// Usage in component\n<template>\n  <button @click=\"handleClick\">Track Event</button>\n</template>\n\n<script setup>\nimport { useAnalytics } from '@/composables/useAnalytics';\n\nconst { track } = useAnalytics();\n\nconst handleClick = () => {\n  track('vue_button_clicked', {\n    component: 'MyButton'\n  });\n};\n</script>",
+          "language": "javascript"
+        },
+        {
+          "title": "Vue Plugin",
+          "description": "Create a Vue plugin for global access",
+          "code": "// src/plugins/analytics.js\nimport { ArdalAnalytics } from 'arda-analytics';\n\nconst analytics = new ArdalAnalytics({\n  apiKey: import.meta.env.VITE_ARDA_API_KEY\n});\n\nexport default {\n  install(app) {\n    app.config.globalProperties.$analytics = analytics;\n    app.provide('analytics', analytics);\n    \n    analytics.init();\n  }\n};\n\n// src/main.js\nimport { createApp } from 'vue';\nimport App from './App.vue';\nimport analyticsPlugin from './plugins/analytics';\n\nconst app = createApp(App);\napp.use(analyticsPlugin);\napp.mount('#app');\n\n// Usage in component\n<script>\nexport default {\n  methods: {\n    trackEvent() {\n      this.$analytics.track('vue_event');\n    }\n  }\n}\n</script>",
+          "language": "javascript"
+        }
+      ]
+    },
+    "astro": {
+      "title": "Astro Integration",
+      "description": "Integrate with Astro for static site generation",
+      "icon": "astro",
+      "difficulty": "Medium",
+      "examples": [
+        {
+          "title": "Client-side Setup",
+          "description": "Add ARDA Analytics to Astro pages",
+          "code": "---\n// src/pages/index.astro\n// Server-side (runs at build time)\nconst pageTitle = \"Home Page\";\n---\n\n<html>\n  <head>\n    <title>{pageTitle}</title>\n  </head>\n  <body>\n    <h1>Welcome to Astro!</h1>\n    \n    <script>\n      // Client-side script\n      import { ArdalAnalytics } from 'arda-analytics';\n      \n      const analytics = new ArdalAnalytics({\n        apiKey: import.meta.env.PUBLIC_ARDA_API_KEY,\n        trackPageViews: true\n      });\n      \n      analytics.init();\n      \n      // Track page view\n      analytics.page('Home');\n    </script>\n  </body>\n</html>",
+          "language": "astro"
+        },
+        {
+          "title": "Layout Integration",
+          "description": "Add analytics to your base layout",
+          "code": "---\n// src/layouts/Layout.astro\nexport interface Props {\n  title: string;\n  description?: string;\n}\n\nconst { title, description } = Astro.props;\n---\n\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"description\" content={description} />\n    <meta name=\"viewport\" content=\"width=device-width\" />\n    <title>{title}</title>\n  </head>\n  <body>\n    <main>\n      <slot />\n    </main>\n    \n    <script>\n      import { ArdalAnalytics } from 'arda-analytics';\n      \n      const analytics = new ArdalAnalytics({\n        apiKey: import.meta.env.PUBLIC_ARDA_API_KEY\n      });\n      \n      document.addEventListener('DOMContentLoaded', () => {\n        analytics.init();\n      });\n      \n      // Export to global scope for page-specific tracking\n      window.analytics = analytics;\n    </script>\n  </body>\n</html>",
+          "language": "astro"
+        }
+      ]
+    },
+    "vanilla": {
+      "title": "Vanilla JavaScript",
+      "description": "Pure JavaScript implementation without frameworks",
+      "icon": "javascript",
+      "difficulty": "Easy",
+      "examples": [
+        {
+          "title": "Basic Implementation",
+          "description": "Simple setup for any HTML page",
+          "code": "<!DOCTYPE html>\n<html>\n<head>\n  <title>My Website</title>\n</head>\n<body>\n  <h1>Welcome</h1>\n  <button id=\"track-btn\">Track Event</button>\n  \n  <script src=\"https://cdn.jsdelivr.net/npm/arda-analytics@latest/dist/arda-analytics.min.js\"></script>\n  <script>\n    // Initialize analytics\n    const analytics = window.ArdalAnalytics.init({\n      apiKey: 'your-api-key-here',\n      trackPageViews: true,\n      enableDebug: true\n    });\n    \n    // Track custom events\n    document.getElementById('track-btn').addEventListener('click', function() {\n      analytics.track('button_clicked', {\n        button_id: 'track-btn',\n        timestamp: Date.now()\n      });\n    });\n    \n    // Track page views manually if needed\n    analytics.page('Home Page', {\n      path: window.location.pathname,\n      title: document.title\n    });\n  </script>\n</body>\n</html>",
+          "language": "html"
+        },
+        {
+          "title": "Advanced Configuration",
+          "description": "Advanced setup with custom options",
+          "code": "// analytics-config.js\nclass AnalyticsManager {\n  constructor(config) {\n    this.analytics = window.ArdalAnalytics.init({\n      apiKey: config.apiKey,\n      trackPageViews: config.trackPageViews || true,\n      enableDebug: config.debug || false,\n      cookieConsent: config.cookieConsent || false,\n      dataRetention: config.dataRetention || 30, // days\n      customEndpoint: config.endpoint,\n      \n      // Privacy settings\n      respectDoNotTrack: true,\n      anonymizeIPs: true,\n      \n      // Performance settings\n      batchSize: 10,\n      flushInterval: 5000 // 5 seconds\n    });\n    \n    this.setupEventListeners();\n  }\n  \n  setupEventListeners() {\n    // Track all clicks on elements with data-track attribute\n    document.addEventListener('click', (e) => {\n      const trackData = e.target.dataset.track;\n      if (trackData) {\n        try {\n          const eventData = JSON.parse(trackData);\n          this.analytics.track(eventData.event, eventData.properties || {});\n        } catch (err) {\n          console.warn('Invalid tracking data:', trackData);\n        }\n      }\n    });\n    \n    // Track form submissions\n    document.addEventListener('submit', (e) => {\n      const form = e.target;\n      if (form.dataset.trackForm) {\n        this.analytics.track('form_submitted', {\n          form_id: form.id || 'unknown',\n          form_name: form.name || 'unknown',\n          page: window.location.pathname\n        });\n      }\n    });\n  }\n  \n  // Custom methods\n  trackPurchase(orderId, value, currency = 'USD') {\n    this.analytics.track('purchase', {\n      order_id: orderId,\n      value: value,\n      currency: currency,\n      timestamp: new Date().toISOString()\n    });\n  }\n  \n  setUser(userId, traits = {}) {\n    this.analytics.identify(userId, traits);\n  }\n}\n\n// Usage\nconst analyticsManager = new AnalyticsManager({\n  apiKey: 'your-api-key',\n  debug: window.location.hostname === 'localhost'\n});",
+          "language": "javascript"
+        }
+      ]
+    },
+    "wordpress": {
+      "title": "WordPress Integration",
+      "description": "Add ARDA Analytics to WordPress sites",
+      "icon": "wordpress",
+      "difficulty": "Medium",
+      "examples": [
+        {
+          "title": "Theme Integration",
+          "description": "Add to your WordPress theme",
+          "code": "<?php\n// functions.php\nfunction arda_analytics_enqueue_script() {\n    // Only load on frontend\n    if (!is_admin()) {\n        wp_enqueue_script(\n            'arda-analytics',\n            'https://cdn.jsdelivr.net/npm/arda-analytics@latest/dist/arda-analytics.min.js',\n            array(),\n            '1.0.0',\n            true\n        );\n        \n        // Pass PHP data to JavaScript\n        wp_localize_script('arda-analytics', 'ardaConfig', array(\n            'apiKey' => get_option('arda_api_key', ''),\n            'trackPageViews' => get_option('arda_track_pages', true),\n            'currentUser' => is_user_logged_in() ? wp_get_current_user()->ID : null,\n            'postType' => get_post_type(),\n            'postId' => get_the_ID()\n        ));\n    }\n}\nadd_action('wp_enqueue_scripts', 'arda_analytics_enqueue_script');\n\n// Initialize analytics in footer\nfunction arda_analytics_init() {\n    if (!is_admin()) {\n        ?>\n        <script>\n        (function() {\n            if (typeof window.ArdalAnalytics !== 'undefined' && ardaConfig.apiKey) {\n                const analytics = window.ArdalAnalytics.init({\n                    apiKey: ardaConfig.apiKey,\n                    trackPageViews: ardaConfig.trackPageViews,\n                    enableDebug: <?php echo WP_DEBUG ? 'true' : 'false'; ?>\n                });\n                \n                // Track WordPress-specific data\n                analytics.page(document.title, {\n                    post_type: ardaConfig.postType,\n                    post_id: ardaConfig.postId,\n                    user_logged_in: ardaConfig.currentUser !== null\n                });\n                \n                // Track current user if logged in\n                if (ardaConfig.currentUser) {\n                    analytics.identify(ardaConfig.currentUser, {\n                        platform: 'wordpress'\n                    });\n                }\n            }\n        })();\n        </script>\n        <?php\n    }\n}\nadd_action('wp_footer', 'arda_analytics_init');",
+          "language": "php"
+        },
+        {
+          "title": "Plugin Development",
+          "description": "Create a WordPress plugin for ARDA Analytics",
+          "code": "<?php\n/**\n * Plugin Name: ARDA Analytics\n * Description: Integrate ARDA Analytics with your WordPress site\n * Version: 1.0.0\n * Author: Your Name\n */\n\n// Prevent direct access\nif (!defined('ABSPATH')) {\n    exit;\n}\n\nclass ArdalAnalyticsPlugin {\n    \n    public function __construct() {\n        add_action('init', array($this, 'init'));\n        add_action('admin_menu', array($this, 'admin_menu'));\n        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));\n        add_action('wp_footer', array($this, 'render_analytics'));\n    }\n    \n    public function init() {\n        // Plugin initialization\n    }\n    \n    public function admin_menu() {\n        add_options_page(\n            'ARDA Analytics Settings',\n            'ARDA Analytics',\n            'manage_options',\n            'arda-analytics',\n            array($this, 'admin_page')\n        );\n    }\n    \n    public function admin_page() {\n        if (isset($_POST['submit'])) {\n            update_option('arda_api_key', sanitize_text_field($_POST['api_key']));\n            update_option('arda_track_pages', isset($_POST['track_pages']));\n            echo '<div class=\"notice notice-success\"><p>Settings saved!</p></div>';\n        }\n        \n        $api_key = get_option('arda_api_key', '');\n        $track_pages = get_option('arda_track_pages', true);\n        \n        ?>\n        <div class=\"wrap\">\n            <h1>ARDA Analytics Settings</h1>\n            <form method=\"post\">\n                <table class=\"form-table\">\n                    <tr>\n                        <th scope=\"row\">API Key</th>\n                        <td>\n                            <input type=\"text\" name=\"api_key\" value=\"<?php echo esc_attr($api_key); ?>\" class=\"regular-text\" />\n                            <p class=\"description\">Enter your ARDA Analytics API key</p>\n                        </td>\n                    </tr>\n                    <tr>\n                        <th scope=\"row\">Track Page Views</th>\n                        <td>\n                            <input type=\"checkbox\" name=\"track_pages\" <?php checked($track_pages); ?> />\n                            <label>Automatically track page views</label>\n                        </td>\n                    </tr>\n                </table>\n                <?php submit_button(); ?>\n            </form>\n        </div>\n        <?php\n    }\n    \n    public function enqueue_scripts() {\n        if (get_option('arda_api_key')) {\n            wp_enqueue_script(\n                'arda-analytics',\n                'https://cdn.jsdelivr.net/npm/arda-analytics@latest/dist/arda-analytics.min.js',\n                array(),\n                '1.0.0',\n                true\n            );
+        }\n    }\n    \n    public function render_analytics() {\n        $api_key = get_option('arda_api_key');\n        if ($api_key && !is_admin()) {\n            ?>\n            <script>\n            (function() {\n                if (typeof window.ArdalAnalytics !== 'undefined') {\n                    window.ArdalAnalytics.init({\n                        apiKey: '<?php echo esc_js($api_key); ?>',\n                        trackPageViews: <?php echo get_option('arda_track_pages', true) ? 'true' : 'false'; ?>\n                    });\n                }\n            })();\n            </script>\n            <?php\n        }\n    }\n}\n\nnew ArdalAnalyticsPlugin();",
+          "language": "php"
+        }
+      ]
+    },
+    "gtm": {
+      "title": "Google Tag Manager",
+      "description": "Deploy via Google Tag Manager",
+      "icon": "tag",
+      "difficulty": "Medium",
+      "examples": [
+        {
+          "title": "Custom HTML Tag",
+          "description": "Set up ARDA Analytics as a GTM tag",
+          "code": "<!-- Custom HTML Tag in GTM -->\n<script>\n(function() {\n  // Load ARDA Analytics\n  var script = document.createElement('script');\n  script.src = 'https://cdn.jsdelivr.net/npm/arda-analytics@latest/dist/arda-analytics.min.js';\n  script.onload = function() {\n    // Initialize once loaded\n    if (window.ArdalAnalytics) {\n      window.ArdalAnalytics.init({\n        apiKey: '{{ARDA API Key}}', // GTM Variable\n        trackPageViews: {{Track Page Views}}, // GTM Variable\n        enableDebug: {{Debug Mode}} // GTM Variable\n      });\n      \n      // Push initialization event to dataLayer\n      window.dataLayer = window.dataLayer || [];\n      window.dataLayer.push({\n        'event': 'arda_analytics_loaded',\n        'arda_status': 'initialized'\n      });\n    }\n  };\n  document.head.appendChild(script);\n})();\n</script>",
+          "language": "html"
+        },
+        {
+          "title": "Event Tracking Integration",
+          "description": "Forward GTM events to ARDA Analytics",
+          "code": "<!-- Custom HTML Tag for Event Tracking -->\n<script>\n(function() {\n  // Wait for ARDA Analytics to be available\n  function waitForArda(callback) {\n    if (window.ArdalAnalytics && window.ArdalAnalytics.track) {\n      callback();\n    } else {\n      setTimeout(function() {\n        waitForArda(callback);\n      }, 100);\n    }\n  }\n  \n  waitForArda(function() {\n    // Listen for GTM events and forward to ARDA\n    window.addEventListener('gtm.dom', function() {\n      // Track page view\n      window.ArdalAnalytics.page({{Page Title}}, {\n        page_path: {{Page Path}},\n        page_location: {{Page URL}},\n        gtm_container: '{{Container ID}}'\n      });\n    });\n    \n    // Custom event forwarding\n    function forwardToArda(eventName, eventData) {\n      window.ArdalAnalytics.track(eventName, {\n        ...eventData,\n        source: 'gtm',\n        gtm_event: true\n      });\n    }\n    \n    // Example: Forward purchase events\n    window.dataLayer = window.dataLayer || [];\n    window.dataLayer.push(function() {\n      this.addEventListener('purchase', function(event) {\n        forwardToArda('purchase', {\n          transaction_id: event.transaction_id,\n          value: event.value,\n          currency: event.currency,\n          items: event.items\n        });\n      });\n    });\n  });\n})();\n</script>",
+          "language": "html"
+        }
+      ]
+    },
+    "hubspot": {
+      "title": "HubSpot Integration",
+      "description": "Connect with HubSpot CRM and Marketing Hub",
+      "icon": "hubspot",
+      "difficulty": "Hard",
+      "examples": [
+        {
+          "title": "HubSpot Tracking Integration",
+          "description": "Sync events with HubSpot",
+          "code": "// hubspot-arda-integration.js\nclass HubSpotArdalIntegration {\n  constructor(config) {\n    this.hubspotPortalId = config.hubspotPortalId;\n    this.ardaApiKey = config.ardaApiKey;\n    this.enableSync = config.enableSync || true;\n    \n    this.initializeAnalytics();\n    this.setupHubSpotIntegration();\n  }\n  \n  initializeAnalytics() {\n    // Initialize ARDA Analytics\n    this.arda = window.ArdalAnalytics.init({\n      apiKey: this.ardaApiKey,\n      trackPageViews: true,\n      \n      // Custom properties for HubSpot sync\n      customProperties: {\n        hubspot_portal_id: this.hubspotPortalId,\n        integration_source: 'hubspot'\n      }\n    });\n  }\n  \n  setupHubSpotIntegration() {\n    // Wait for HubSpot tracking code to load\n    const checkHubSpot = () => {\n      if (window._hsq) {\n        this.integrateWithHubSpot();\n      } else {\n        setTimeout(checkHubSpot, 100);\n      }\n    };\n    checkHubSpot();\n  }\n  \n  integrateWithHubSpot() {\n    // Override HubSpot's track method to also send to ARDA\n    const originalTrack = window._hsq.push;\n    window._hsq.push = (...args) => {\n      // Call original HubSpot tracking\n      originalTrack.apply(window._hsq, args);\n      \n      // Forward to ARDA Analytics if sync is enabled\n      if (this.enableSync && args[0] && typeof args[0] === 'object') {\n        this.forwardToArda(args[0]);\n      }\n    };\n    \n    // Track form submissions\n    window.addEventListener('message', (event) => {\n      if (event.data.type === 'hsFormCallback' && event.data.eventName === 'onFormSubmit') {\n        this.arda.track('hubspot_form_submitted', {\n          form_id: event.data.id,\n          portal_id: this.hubspotPortalId,\n          page_url: window.location.href\n        });\n      }\n    });\n  }\n  \n  forwardToArda(hsEvent) {\n    // Map common HubSpot events to ARDA events\n    const eventMap = {\n      'identify': 'user_identified',\n      'track': 'custom_event',\n      'page': 'page_viewed'\n    };\n    \n    if (hsEvent[0] && eventMap[hsEvent[0]]) {\n      const eventName = eventMap[hsEvent[0]];\n      const eventData = {\n        ...hsEvent[1],\n        hubspot_original: hsEvent,\n        synced_from: 'hubspot'\n      };\n      \n      this.arda.track(eventName, eventData);\n    }\n  }\n  \n  // Method to sync contact data\n  syncContactData(contactData) {\n    if (contactData.email) {\n      this.arda.identify(contactData.email, {\n        name: contactData.name,\n        company: contactData.company,\n        hubspot_contact_id: contactData.vid,\n        lifecycle_stage: contactData.lifecyclestage,\n        lead_status: contactData.leadstatus\n      });\n    }\n  }\n}\n\n// Initialize the integration\nconst integration = new HubSpotArdalIntegration({\n  hubspotPortalId: 'YOUR_HUBSPOT_PORTAL_ID',\n  ardaApiKey: 'YOUR_ARDA_API_KEY',\n  enableSync: true\n});",
+          "language": "javascript"
+        }
+      ]
+    }
+  },
+  "api": {
+    "overview": {
+      "title": "API Reference",
+      "description": "Complete API documentation for ARDA Analytics",
+      "baseUrl": "https://api.arda-analytics.dev/v1"
+    },
+    "methods": [
+      {
+        "name": "init",
+        "description": "Initialize the analytics instance",
+        "syntax": "ArdalAnalytics.init(config)",
+        "parameters": [
+          {
+            "name": "config",
+            "type": "object",
+            "required": true,
+            "description": "Configuration object",
+            "properties": [
+              {
+                "name": "apiKey",
+                "type": "string",
+                "required": true,
+                "description": "Your ARDA Analytics API key"
+              },
+              {
+                "name": "trackPageViews",
+                "type": "boolean",
+                "required": false,
+                "default": "true",
+                "description": "Automatically track page views"
+              },
+              {
+                "name": "enableDebug",
+                "type": "boolean",
+                "required": false,
+                "default": "false",
+                "description": "Enable debug logging"
+              }
+            ]
+          }
+        ],
+        "returns": {
+          "type": "ArdalAnalytics",
+          "description": "Analytics instance"
+        },
+        "example": "const analytics = ArdalAnalytics.init({\n  apiKey: 'your-api-key',\n  trackPageViews: true,\n  enableDebug: false\n});"
+      },
+      {
+        "name": "track",
+        "description": "Track a custom event",
+        "syntax": "analytics.track(event, properties)",
+        "parameters": [
+          {
+            "name": "event",
+            "type": "string",
+            "required": true,
+            "description": "Event name"
+          },
+          {
+            "name": "properties",
+            "type": "object",
+            "required": false,
+            "description": "Event properties"
+          }
+        ],
+        "returns": {
+          "type": "Promise<void>",
+          "description": "Promise that resolves when event is tracked"
+        },
+        "example": "analytics.track('button_clicked', {\n  button_id: 'cta-primary',\n  page: '/landing'\n});"
+      },
+      {
+        "name": "identify",
+        "description": "Identify a user",
+        "syntax": "analytics.identify(userId, traits)",
+        "parameters": [
+          {
+            "name": "userId",
+            "type": "string",
+            "required": true,
+            "description": "Unique user identifier"
+          },
+          {
+            "name": "traits",
+            "type": "object",
+            "required": false,
+            "description": "User traits"
+          }
+        ],
+        "returns": {
+          "type": "Promise<void>",
+          "description": "Promise that resolves when user is identified"
+        },
+        "example": "analytics.identify('user-123', {\n  name: 'John Doe',\n  email: 'john@example.com',\n  plan: 'premium'\n});"
+      },
+      {
+        "name": "page",
+        "description": "Track a page view",
+        "syntax": "analytics.page(name, properties)",
+        "parameters": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": false,
+            "description": "Page name"
+          },
+          {
+            "name": "properties",
+            "type": "object",
+            "required": false,
+            "description": "Page properties"
+          }
+        ],
+        "returns": {
+          "type": "Promise<void>",
+          "description": "Promise that resolves when page view is tracked"
+        },
+        "example": "analytics.page('Product Detail', {\n  product_id: 'prod-123',\n  category: 'electronics',\n  price: 99.99\n});"
+      }
+    ]
+  },
+  "troubleshooting": {
+    "common_issues": [
+      {
+        "title": "Analytics not initializing",
+        "description": "The analytics instance fails to initialize",
+        "causes": [
+          "Invalid API key",
+          "Network connectivity issues",
+          "Script not loaded properly"
+        ],
+        "solutions": [
+          {
+            "step": 1,
+            "action": "Check your API key",
+            "code": "// Verify your API key is correct\nconsole.log('API Key:', process.env.REACT_APP_ARDA_API_KEY);"
+          },
+          {
+            "step": 2,
+            "action": "Enable debug mode",
+            "code": "const analytics = ArdalAnalytics.init({\n  apiKey: 'your-key',\n  enableDebug: true // This will show initialization logs\n});"
+          },
+          {
+            "step": 3,
+            "action": "Check network requests",
+            "code": "// Open browser dev tools and check Network tab\n// Look for failed requests to api.arda-analytics.dev"
+          }
+        ]
+      },
+      {
+        "title": "Events not being tracked",
+        "description": "Custom events are not appearing in your dashboard",
+        "causes": [
+          "Incorrect event format",
+          "Rate limiting",
+          "Client-side errors"
+        ],
+        "solutions": [
+          {
+            "step": 1,
+            "action": "Verify event format",
+            "code": "// Correct format\nanalytics.track('event_name', {\n  property1: 'value1',\n  property2: 123\n});\n\n// Incorrect - don't do this\nanalytics.track({ event: 'name' }); // Wrong!"
+          },
+          {
+            "step": 2,
+            "action": "Check for errors",
+            "code": "analytics.track('test_event').catch(error => {\n  console.error('Tracking failed:', error);\n});"
+          }
+        ]
+      }
+    ]
+  }
+} 

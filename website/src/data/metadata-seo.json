@@ -1,0 +1,35 @@
+{
+  "site": {
+    "name": "ARDA Analytics",
+    "description": "A lightweight, privacy-focused analytics plugin that gives you the insights you need without the complexity you don't.",
+    "url": "https://arda-analytics.dev",
+    "keywords": ["analytics", "javascript", "privacy", "tracking", "npm", "plugin", "lightweight"],
+    "author": "ARDA Team",
+    "language": "en"
+  },
+  "pages": {
+    "home": {
+      "title": "ARDA Analytics - Lightweight Privacy-Focused Analytics",
+      "description": "Deploy analytics in minutes with our lightweight, privacy-focused plugin. GDPR compliant, developer-friendly, and less than 5KB.",
+      "keywords": ["analytics", "privacy", "GDPR", "lightweight", "developer tools"],
+      "ogImage": "/og-home.png"
+    },
+    "demo": {
+      "title": "Interactive Demo - ARDA Analytics",
+      "description": "Try ARDA Analytics in action. See real-time event tracking, explore the API, and test our interactive playground.",
+      "keywords": ["demo", "interactive", "real-time", "events", "playground"],
+      "ogImage": "/og-demo.png"
+    },
+    "docs": {
+      "title": "Documentation - ARDA Analytics",
+      "description": "Complete documentation, API reference, and integration guides for ARDA Analytics. Get started in minutes.",
+      "keywords": ["documentation", "API", "integration", "guides", "setup"],
+      "ogImage": "/og-docs.png"
+    }
+  },
+  "social": {
+    "twitter": "@arda_analytics",
+    "github": "https://github.com/your-org/arda-analytics",
+    "discord": "https://discord.gg/arda-analytics"
+  }
+} 

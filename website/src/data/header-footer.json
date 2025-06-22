@@ -1,0 +1,159 @@
+{
+  "header": {
+    "navigation": [
+      {
+        "name": "Home",
+        "href": "/",
+        "external": false
+      },
+      {
+        "name": "Demo",
+        "href": "/demo",
+        "external": false
+      },
+      {
+        "name": "Docs",
+        "href": "/docs",
+        "external": false
+      }
+    ],
+    "cta": {
+      "primary": {
+        "text": "Get Started",
+        "href": "#get-started",
+        "variant": "default"
+      },
+      "secondary": {
+        "text": "GitHub",
+        "href": "https://github.com/your-org/arda-analytics",
+        "variant": "outline",
+        "external": true
+      }
+    }
+  },
+  "footer": {
+    "sections": [
+      {
+        "title": "Product",
+        "links": [
+          {
+            "name": "Features",
+            "href": "/#features"
+          },
+          {
+            "name": "Demo",
+            "href": "/demo"
+          },
+          {
+            "name": "Pricing",
+            "href": "/#pricing"
+          },
+          {
+            "name": "Changelog",
+            "href": "/changelog"
+          }
+        ]
+      },
+      {
+        "title": "Developers",
+        "links": [
+          {
+            "name": "Documentation",
+            "href": "/docs"
+          },
+          {
+            "name": "API Reference",
+            "href": "/docs/api"
+          },
+          {
+            "name": "Examples",
+            "href": "/docs/examples"
+          },
+          {
+            "name": "GitHub",
+            "href": "https://github.com/your-org/arda-analytics",
+            "external": true
+          }
+        ]
+      },
+      {
+        "title": "Support",
+        "links": [
+          {
+            "name": "Help Center",
+            "href": "/help"
+          },
+          {
+            "name": "Community",
+            "href": "https://discord.gg/arda-analytics",
+            "external": true
+          },
+          {
+            "name": "Contact",
+            "href": "/contact"
+          },
+          {
+            "name": "Status",
+            "href": "https://status.arda-analytics.dev",
+            "external": true
+          }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          {
+            "name": "About",
+            "href": "/about"
+          },
+          {
+            "name": "Blog",
+            "href": "/blog"
+          },
+          {
+            "name": "Privacy",
+            "href": "/privacy"
+          },
+          {
+            "name": "Terms",
+            "href": "/terms"
+          }
+        ]
+      }
+    ],
+    "legal": {
+      "copyright": "© 2024 ARDA Analytics. All rights reserved.",
+      "links": [
+        {
+          "name": "Privacy Policy",
+          "href": "/privacy"
+        },
+        {
+          "name": "Terms of Service",
+          "href": "/terms"
+        },
+        {
+          "name": "Cookie Policy",
+          "href": "/cookies"
+        }
+      ]
+    },
+    "social": [
+      {
+        "name": "GitHub",
+        "href": "https://github.com/your-org/arda-analytics",
+        "icon": "github"
+      },
+      {
+        "name": "Twitter",
+        "href": "https://twitter.com/arda_analytics",
+        "icon": "twitter"
+      },
+      {
+        "name": "Discord",
+        "href": "https://discord.gg/arda-analytics",
+        "icon": "discord"
+      }
+    ]
+  }
+} 

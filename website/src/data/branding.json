@@ -1,0 +1,80 @@
+{
+  "brand": {
+    "name": "ARDA Analytics",
+    "tagline": "Analytics Made Simple",
+    "shortName": "ARDA",
+    "logoText": "ARDA Analytics",
+    "accentColor": "blue",
+    "theme": {
+      "primary": "hsl(240 5.9% 10%)",
+      "primaryForeground": "hsl(0 0% 98%)",
+      "accent": "hsl(240 4.8% 95.9%)",
+      "accentForeground": "hsl(240 5.9% 10%)"
+    }
+  },
+  "product": {
+    "type": "JavaScript Analytics Plugin",
+    "category": "Developer Tools",
+    "bundleSize": "<5KB",
+    "license": "MIT",
+    "status": "Beta",
+    "version": "0.1.0"
+  },
+  "features": {
+    "primary": [
+      {
+        "title": "Lightweight & Fast",
+        "description": "Minimal footprint with maximum performance. Built for speed without compromising functionality.",
+        "icon": "zap",
+        "color": "blue"
+      },
+      {
+        "title": "Privacy First",
+        "description": "GDPR compliant with built-in privacy controls. Your users' data stays secure.",
+        "icon": "shield",
+        "color": "green"
+      },
+      {
+        "title": "Real-time Analytics",
+        "description": "Track user interactions and behaviors in real-time with customizable dashboards.",
+        "icon": "bar-chart-3",
+        "color": "purple"
+      },
+      {
+        "title": "Universal Integration",
+        "description": "Works with any website, framework, or platform. CDN, NPM, or self-hosted.",
+        "icon": "globe",
+        "color": "cyan"
+      },
+      {
+        "title": "Highly Configurable",
+        "description": "Extensive configuration options with plugin architecture for custom functionality.",
+        "icon": "settings",
+        "color": "orange"
+      },
+      {
+        "title": "Developer Friendly",
+        "description": "Clean APIs, TypeScript support, and comprehensive documentation.",
+        "icon": "code-2",
+        "color": "red"
+      }
+    ],
+    "highlights": [
+      {
+        "label": "Bundle Size",
+        "value": "<5KB",
+        "description": "Gzipped"
+      },
+      {
+        "label": "Performance",
+        "value": "<1ms",
+        "description": "Average event processing"
+      },
+      {
+        "label": "Reliability",
+        "value": "99.9%",
+        "description": "Uptime"
+      }
+    ]
+  }
+} 
