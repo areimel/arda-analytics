@@ -131,6 +131,15 @@ class ARDAAnalytics {
 	}
 
 	/**
+	 * Direct access to pushToDataLayer function for compatibility
+	 * @param {string} eventName - The event name to push
+	 * @returns {Object} Result of the push operation
+	 */
+	pushToDataLayer(eventName) {
+		return this.pushEvent(eventName);
+	}
+
+	/**
 	 * Check if GTM is available
 	 * @returns {boolean} GTM availability status
 	 */
@@ -193,6 +202,11 @@ export default ARDAAnalytics;
 // For UMD builds and global usage
 if (typeof window !== 'undefined') {
 	window.ARDAAnalytics = ARDAAnalytics;
+	
+	// Also expose pushToDataLayer as a static method for easy access
+	if (!window.ARDAAnalytics.pushToDataLayer) {
+		window.ARDAAnalytics.pushToDataLayer = pushToDataLayer;
+	}
 }
 
 // For CommonJS
