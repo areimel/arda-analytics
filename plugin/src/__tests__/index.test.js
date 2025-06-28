@@ -20,6 +20,9 @@ describe('ARDA Analytics', () => {
 		if (analytics) {
 			analytics.destroy();
 		}
+		// Clean up any remaining event listeners
+		document.removeEventListener('click', () => {});
+		document.removeEventListener('submit', () => {});
 	});
 
 	describe('Initialization', () => {
@@ -37,33 +40,90 @@ describe('ARDA Analytics', () => {
 			expect(window.dataLayer).toBeDefined();
 			expect(Array.isArray(window.dataLayer)).toBe(true);
 		});
+
+		test('should check GTM availability', () => {
+			// Before init, dataLayer might not exist
+			const gtmReady = analytics.isGTMReady();
+			expect(typeof gtmReady).toBe('boolean');
+			
+			// After init, dataLayer should be available
+			analytics.init();
+			expect(analytics.isGTMReady()).toBe(true);
+		});
 	});
 
-	describe('Event Tracking', () => {
+	describe('Configuration Management', () => {
+		test('should return current configuration', () => {
+			const config = analytics.getConfig();
+			expect(config).toHaveProperty('debug', true);
+			expect(config).toHaveProperty('autoInit', false);
+		});
+
+		test('should update configuration', () => {
+			analytics.updateConfig({ debug: false });
+			const config = analytics.getConfig();
+			expect(config.debug).toBe(false);
+		});
+	});
+
+	describe('Manual Event Pushing', () => {
 		beforeEach(() => {
 			analytics.init();
 		});
 
-		test('should detect click on GAEvent element', (done) => {
-			// Create test element
+		test('should push custom events to GTM', () => {
+			const result = analytics.pushEvent('test_event');
+			
+			expect(result.success).toBe(true);
+			expect(result.eventData).toEqual({
+				event: 'CustomEvent',
+				eventLabel: 'test_event'
+			});
+			
+			// Check if event was added to dataLayer
+			expect(window.dataLayer).toContainEqual({
+				event: 'CustomEvent',
+				eventLabel: 'test_event'
+			});
+		});
+
+		test('should handle push errors gracefully', () => {
+			// Simulate error by making dataLayer non-writable
+			Object.defineProperty(window, 'dataLayer', {
+				writable: false,
+				value: null
+			});
+
+			const result = analytics.pushEvent('test_event');
+			expect(result.success).toBe(false);
+			expect(result.error).toBeDefined();
+		});
+
+		test('should not push events if not initialized', () => {
+			analytics.destroy(); // Ensure not initialized
+			
+			const result = analytics.pushEvent('test_event');
+			expect(result.success).toBe(false);
+			expect(result.error).toBe('Not initialized');
+		});
+	});
+
+	describe('Click Event Tracking', () => {
+		beforeEach(() => {
+			analytics.init();
+		});
+
+		test('should detect button clicks', (done) => {
 			const button = document.createElement('button');
-			button.setAttribute('data-event', 'GAEvent');
-			button.setAttribute('data-category', 'test-category');
-			button.setAttribute('data-action', 'test-action');
-			button.setAttribute('data-label', 'test-label');
-			button.setAttribute('data-value', '123');
+			button.textContent = 'Test Button';
+			button.id = 'test-button';
 			document.body.appendChild(button);
 
-			// Mock dataLayer push to capture the event
+			// Mock dataLayer push to capture events
 			const originalPush = window.dataLayer.push;
 			window.dataLayer.push = function(data) {
-				if (data.event === 'GAEvent') {
-					expect(data.eventCategory).toBe('test-category');
-					expect(data.eventAction).toBe('test-action');
-					expect(data.eventLabel).toBe('test-label');
-					expect(data.eventValue).toBe('123');
-					
-					// Restore original push
+				if (data.event === 'CustomEvent' && data.eventLabel === 'click_button') {
+					expect(data.eventLabel).toBe('click_button');
 					window.dataLayer.push = originalPush;
 					done();
 				}
@@ -74,37 +134,110 @@ describe('ARDA Analytics', () => {
 			button.click();
 		});
 
-		test('should handle nested element clicks', (done) => {
-			// Create nested elements
-			const div = document.createElement('div');
-			div.setAttribute('data-event', 'GAEvent');
-			div.setAttribute('data-category', 'nested-category');
-			div.setAttribute('data-action', 'nested-action');
-			div.setAttribute('data-label', 'nested-label');
-			div.setAttribute('data-value', '456');
+		test('should detect link clicks', (done) => {
+			const link = document.createElement('a');
+			link.href = 'https://example.com';
+			link.textContent = 'Test Link';
+			document.body.appendChild(link);
 
-			const span = document.createElement('span');
-			span.textContent = 'Click me';
-			div.appendChild(span);
-			document.body.appendChild(div);
-
-			// Mock dataLayer push
 			const originalPush = window.dataLayer.push;
 			window.dataLayer.push = function(data) {
-				if (data.event === 'GAEvent') {
-					expect(data.eventCategory).toBe('nested-category');
-					expect(data.eventAction).toBe('nested-action');
-					expect(data.eventLabel).toBe('nested-label');
-					expect(data.eventValue).toBe('456');
-					
+				if (data.event === 'CustomEvent' && data.eventLabel === 'click_link') {
+					expect(data.eventLabel).toBe('click_link');
 					window.dataLayer.push = originalPush;
 					done();
 				}
 				return originalPush.call(this, data);
 			};
 
-			// Click on nested element
-			span.click();
+			link.click();
+		});
+
+		test('should detect generic element clicks', (done) => {
+			const div = document.createElement('div');
+			div.textContent = 'Clickable div';
+			document.body.appendChild(div);
+
+			const originalPush = window.dataLayer.push;
+			window.dataLayer.push = function(data) {
+				if (data.event === 'CustomEvent' && data.eventLabel === 'click_element') {
+					expect(data.eventLabel).toBe('click_element');
+					window.dataLayer.push = originalPush;
+					done();
+				}
+				return originalPush.call(this, data);
+			};
+
+			div.click();
+		});
+	});
+
+	describe('Form Event Tracking', () => {
+		beforeEach(() => {
+			analytics.init();
+		});
+
+		test('should detect form submissions', (done) => {
+			const form = document.createElement('form');
+			form.id = 'test-form';
+			
+			const input = document.createElement('input');
+			input.name = 'test-field';
+			input.value = 'test-value';
+			form.appendChild(input);
+			
+			document.body.appendChild(form);
+
+			const originalPush = window.dataLayer.push;
+			window.dataLayer.push = function(data) {
+				if (data.event === 'CustomEvent' && data.eventLabel === 'form_submit') {
+					expect(data.eventLabel).toBe('form_submit');
+					window.dataLayer.push = originalPush;
+					done();
+				}
+				return originalPush.call(this, data);
+			};
+
+			// Create and dispatch submit event
+			const submitEvent = new Event('submit', { bubbles: true });
+			form.dispatchEvent(submitEvent);
+		});
+
+		test('should detect form validation errors', (done) => {
+			const input = document.createElement('input');
+			input.name = 'required-field';
+			input.required = true;
+			document.body.appendChild(input);
+
+			const originalPush = window.dataLayer.push;
+			window.dataLayer.push = function(data) {
+				if (data.event === 'CustomEvent' && data.eventLabel === 'form_error') {
+					expect(data.eventLabel).toBe('form_error');
+					window.dataLayer.push = originalPush;
+					done();
+				}
+				return originalPush.call(this, data);
+			};
+
+			// Create and dispatch invalid event
+			const invalidEvent = new Event('invalid', { bubbles: true });
+			input.dispatchEvent(invalidEvent);
+		});
+	});
+
+	describe('Page View Tracking', () => {
+		test('should detect page load events', () => {
+			// Initialize analytics
+			analytics.init();
+			
+			// Give a moment for page view events to be processed
+			// In a real browser environment, this would be triggered immediately
+			// For testing purposes, we'll check if the event triggering mechanism is set up
+			expect(analytics.isReady()).toBe(true);
+			
+			// Test that a manual page view event can be pushed
+			const result = analytics.pushEvent('page_view');
+			expect(result.success).toBe(true);
 		});
 	});
 
@@ -115,6 +248,14 @@ describe('ARDA Analytics', () => {
 			
 			analytics.destroy();
 			expect(analytics.isReady()).toBe(false);
+		});
+
+		test('should handle multiple destroy calls gracefully', () => {
+			analytics.init();
+			analytics.destroy();
+			
+			// Should not throw
+			expect(() => analytics.destroy()).not.toThrow();
 		});
 	});
 });

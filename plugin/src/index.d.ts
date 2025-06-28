@@ -12,11 +12,37 @@ declare namespace ARDAAnalytics {
 
 	// Event Data Types
 	interface EventData {
-		category: string;
-		action: string;
-		label: string;
-		value: string;
+		type: string;
+		element?: HTMLElement;
+		url?: string;
+		timestamp: number;
+		metadata?: Record<string, unknown>;
 	}
+
+	// UTM Parameter Types
+	interface UTMParams {
+		utm_source?: string;
+		utm_medium?: string;
+		utm_campaign?: string;
+		utm_term?: string;
+		utm_content?: string;
+	}
+
+	// GTM Event Types
+	interface GTMEvent {
+		event: string;
+		[key: string]: unknown;
+	}
+
+	// GTM Push Result Types
+	interface GTMPushResult {
+		success: boolean;
+		error?: string;
+		eventData?: GTMEvent;
+	}
+
+	// Event Handler Type
+	type EventHandler = (eventData: EventData) => void;
 }
 
 declare class ARDAAnalytics {
@@ -25,6 +51,11 @@ declare class ARDAAnalytics {
 	 * @param options Configuration options
 	 */
 	constructor(options?: ARDAAnalytics.Config);
+
+	/**
+	 * Initialize the plugin
+	 */
+	init(): void;
 
 	/**
 	 * Get plugin version
@@ -37,6 +68,31 @@ declare class ARDAAnalytics {
 	 * @returns True if ready
 	 */
 	isReady(): boolean;
+
+	/**
+	 * Check if GTM is available and ready
+	 * @returns True if GTM is available
+	 */
+	isGTMReady(): boolean;
+
+	/**
+	 * Get current plugin configuration
+	 * @returns Current configuration object
+	 */
+	getConfig(): ARDAAnalytics.Config;
+
+	/**
+	 * Update plugin configuration
+	 * @param newConfig New configuration options
+	 */
+	updateConfig(newConfig: Partial<ARDAAnalytics.Config>): void;
+
+	/**
+	 * Manually push a custom event to GTM
+	 * @param eventName The event name to push
+	 * @returns Result of the push operation
+	 */
+	pushEvent(eventName: string): ARDAAnalytics.GTMPushResult;
 
 	/**
 	 * Destroy the plugin instance
@@ -52,5 +108,6 @@ export { ARDAAnalytics };
 declare global {
 	interface Window {
 		ARDAAnalytics: typeof ARDAAnalytics;
+		dataLayer?: Record<string, unknown>[];
 	}
 }

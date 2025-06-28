@@ -8,7 +8,10 @@ const createConfig = (env, options) => {
 	const baseConfig = {
 		entry: './src/index.js',
 		resolve: {
-			extensions: ['.js', '.ts'],
+			extensions: ['.ts', '.js'],
+			extensionAlias: {
+				'.js': ['.js', '.ts'],
+			},
 		},
 		module: {
 			rules: [
@@ -18,7 +21,10 @@ const createConfig = (env, options) => {
 					use: {
 						loader: 'babel-loader',
 						options: {
-							presets: ['@babel/preset-env'],
+							presets: [
+								'@babel/preset-env',
+								['@babel/preset-typescript', { allowDeclareFields: true }],
+							],
 						},
 					},
 				},
