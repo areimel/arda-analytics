@@ -25,6 +25,24 @@
       "description": "Complete documentation, API reference, and integration guides for ARDA Analytics. Get started in minutes.",
       "keywords": ["documentation", "API", "integration", "guides", "setup"],
       "ogImage": "/og-docs.png"
+    },
+    "tools": {
+      "title": "Developer Tools - ARDA Analytics",
+      "description": "Free online tools for developers and marketers. QR code generator, URL builder, and more productivity tools.",
+      "keywords": ["tools", "developer", "marketing", "QR code", "URL builder", "free"],
+      "ogImage": "/og-tools.png"
+    },
+    "tracking-url-builder": {
+      "title": "Tracking URL Builder - Free UTM Parameter Tool",
+      "description": "Build custom tracking URLs with UTM parameters for marketing campaigns. Free tool with QR code generation.",
+      "keywords": ["UTM", "URL builder", "tracking", "marketing", "campaigns", "analytics"],
+      "ogImage": "/og-url-builder.png"
+    },
+    "qr-code-generator": {
+      "title": "QR Code Generator - Free Customizable QR Codes",
+      "description": "Generate custom QR codes with multiple formats, colors, and sizes. Free tool with instant download.",
+      "keywords": ["QR code", "generator", "free", "customizable", "download", "barcode"],
+      "ogImage": "/og-qr-generator.png"
     }
   },
   "social": {
