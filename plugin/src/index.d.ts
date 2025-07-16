@@ -5,144 +5,44 @@
 
 declare namespace ARDAAnalytics {
 	// Configuration Types
-	interface AutoTrackConfig {
-		pageViews?: boolean;
-		clicks?: boolean;
-		forms?: boolean;
-		scrollDepth?: boolean;
-	}
-
-	interface StorageConfig {
-		enabled?: boolean;
-		type?: 'localStorage' | 'sessionStorage' | 'memory';
-		prefix?: string;
-		maxEvents?: number;
-	}
-
-	interface APIConfig {
-		enabled?: boolean;
-		endpoint?: string | null;
-		apiKey?: string | null;
-		timeout?: number;
-		retryAttempts?: number;
-		batchSize?: number;
-	}
-
-	interface PrivacyConfig {
-		respectDoNotTrack?: boolean;
-		anonymizeIp?: boolean;
-		cookieConsent?: boolean;
-	}
-
-	interface DebugConfig {
-		enabled?: boolean;
-		logLevel?: 'error' | 'warn' | 'info' | 'debug';
-		verbose?: boolean;
-	}
-
 	interface Config {
-		autoTrack?: AutoTrackConfig;
-		storage?: StorageConfig;
-		api?: APIConfig;
-		privacy?: PrivacyConfig;
-		debug?: DebugConfig;
+		debug?: boolean;
+		autoInit?: boolean;
 	}
 
-	// Event Types
-	interface EventProperties {
-		[key: string]: string | number | boolean | null | undefined;
-	}
-
+	// Event Data Types
 	interface EventData {
+		type: string;
+		element?: HTMLElement;
+		url?: string;
+		timestamp: number;
+		metadata?: Record<string, unknown>;
+	}
+
+	// UTM Parameter Types
+	interface UTMParams {
+		utm_source?: string;
+		utm_medium?: string;
+		utm_campaign?: string;
+		utm_term?: string;
+		utm_content?: string;
+	}
+
+	// GTM Event Types
+	interface GTMEvent {
 		event: string;
-		properties: EventProperties & {
-			timestamp: number;
-			url?: string;
-			userAgent?: string;
-			sessionId?: string;
-		};
-		options?: TrackingOptions;
-		id?: string;
+		[key: string]: unknown;
 	}
 
-	interface TrackingOptions {
-		[key: string]: any;
+	// GTM Push Result Types
+	interface GTMPushResult {
+		success: boolean;
+		error?: string;
+		eventData?: GTMEvent;
 	}
 
-	// Browser Support Types
-	interface BrowserFeatures {
-		localStorage: boolean;
-		sessionStorage: boolean;
-		fetch: boolean;
-		addEventListener: boolean;
-		querySelector: boolean;
-		console: boolean;
-		promise: boolean;
-	}
-
-	interface BrowserInfo {
-		userAgent: string;
-		isIE: boolean;
-		isChrome: boolean;
-		isFirefox: boolean;
-		isSafari: boolean;
-		isMobile: boolean;
-	}
-
-	// Debug Types
-	interface DebugInfo {
-		version: string;
-		initialized: boolean;
-		degraded: boolean;
-		startTime: number;
-		uptime: number;
-		browserSupport: BrowserFeatures;
-		config: Config;
-		events: any;
-		storage: {
-			size: number;
-			available: boolean;
-		};
-		api: {
-			queueSize: number;
-			online: boolean;
-		};
-	}
-
-	// Element Data Types
-	interface ElementPosition {
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-	}
-
-	interface ElementData {
-		tagName: string;
-		id: string | null;
-		classes: string | null;
-		text: string;
-		href: string | null;
-		dataset: { [key: string]: string };
-		position: ElementPosition;
-	}
-
-	interface ViewportSize {
-		width: number;
-		height: number;
-	}
-
-	interface PageInfo {
-		url: string;
-		pathname: string;
-		search: string;
-		hash: string;
-		title: string;
-		referrer: string;
-	}
-
-	// Event Listener Types
-	type EventCallback = (data: any) => void;
+	// Event Handler Type
+	type EventHandler = (eventData: EventData) => void;
 }
 
 declare class ARDAAnalytics {
@@ -153,51 +53,9 @@ declare class ARDAAnalytics {
 	constructor(options?: ARDAAnalytics.Config);
 
 	/**
-	 * Track an analytics event
-	 * @param eventName Name of the event
-	 * @param properties Event properties
-	 * @param options Tracking options
-	 * @returns Event ID or null if failed
+	 * Initialize the plugin
 	 */
-	track(
-		eventName: string,
-		properties?: ARDAAnalytics.EventProperties,
-		options?: ARDAAnalytics.TrackingOptions,
-	): string | null;
-
-	/**
-	 * Track a page view event
-	 */
-	trackPageView(): void;
-
-	/**
-	 * Get configuration value
-	 * @param key Configuration key (supports dot notation)
-	 * @param defaultValue Default value if key not found
-	 * @returns Configuration value
-	 */
-	getConfig<T = any>(key: string, defaultValue?: T): T;
-
-	/**
-	 * Set configuration value
-	 * @param key Configuration key or object
-	 * @param value Configuration value
-	 */
-	setConfig(key: string | ARDAAnalytics.Config, value?: any): void;
-
-	/**
-	 * Add event listener
-	 * @param event Event name
-	 * @param callback Event callback
-	 */
-	on(event: string, callback: ARDAAnalytics.EventCallback): void;
-
-	/**
-	 * Remove event listener
-	 * @param event Event name
-	 * @param callback Event callback
-	 */
-	off(event: string, callback: ARDAAnalytics.EventCallback): void;
+	init(): void;
 
 	/**
 	 * Get plugin version
@@ -212,29 +70,29 @@ declare class ARDAAnalytics {
 	isReady(): boolean;
 
 	/**
-	 * Check if plugin is running in degraded mode
-	 * @returns True if in degraded mode
+	 * Check if GTM is available and ready
+	 * @returns True if GTM is available
 	 */
-	isDegradedMode(): boolean;
+	isGTMReady(): boolean;
 
 	/**
-	 * Get stored events
-	 * @param limit Maximum number of events to return
-	 * @returns Array of stored events
+	 * Get current plugin configuration
+	 * @returns Current configuration object
 	 */
-	getStoredEvents(limit?: number): ARDAAnalytics.EventData[];
+	getConfig(): ARDAAnalytics.Config;
 
 	/**
-	 * Clear all stored events
-	 * @returns True if successful
+	 * Update plugin configuration
+	 * @param newConfig New configuration options
 	 */
-	clearStoredEvents(): boolean;
+	updateConfig(newConfig: Partial<ARDAAnalytics.Config>): void;
 
 	/**
-	 * Get debug information
-	 * @returns Debug information object
+	 * Manually push a custom event to GTM
+	 * @param eventName The event name to push
+	 * @returns Result of the push operation
 	 */
-	getDebugInfo(): ARDAAnalytics.DebugInfo;
+	pushEvent(eventName: string): ARDAAnalytics.GTMPushResult;
 
 	/**
 	 * Destroy the plugin instance
@@ -250,5 +108,6 @@ export { ARDAAnalytics };
 declare global {
 	interface Window {
 		ARDAAnalytics: typeof ARDAAnalytics;
+		dataLayer?: Record<string, unknown>[];
 	}
 }

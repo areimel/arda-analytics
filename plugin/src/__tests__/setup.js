@@ -33,10 +33,18 @@ const sessionStorageMock = {
 };
 global.sessionStorage = sessionStorageMock;
 
-// Mock fetch
+// Mock fetch if needed
 global.fetch = jest.fn();
 
-// Mock console methods to avoid noise in tests
+// Setup dataLayer for GTM testing with proper property descriptor
+Object.defineProperty(window, 'dataLayer', {
+	writable: true,
+	configurable: true,
+	value: []
+});
+
+// Mock console methods for cleaner test output
+const originalConsole = { ...console };
 global.console = {
 	...console,
 	log: jest.fn(),
@@ -51,6 +59,25 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	localStorage.clear();
 	sessionStorage.clear();
+	
+	// Reset dataLayer with proper property management
+	Object.defineProperty(window, 'dataLayer', {
+		writable: true,
+		configurable: true,
+		value: []
+	});
+	
+	// Reset console mocks but keep original functionality for actual errors
+	console.log.mockClear();
+	console.debug.mockClear();
+	console.info.mockClear();
+	console.warn.mockClear();
+	console.error.mockClear();
+});
+
+// Restore console after tests
+afterAll(() => {
+	global.console = originalConsole;
 });
 
 // Global test utilities
@@ -80,6 +107,31 @@ global.testUtils = {
 				}
 			};
 			checkCondition();
+		});
+	},
+	
+	// Helper to find events in dataLayer
+	findDataLayerEvent: (eventLabel) => {
+		return window.dataLayer.find(
+			event => event.event === 'CustomEvent' && event.eventLabel === eventLabel
+		);
+	},
+	
+	// Helper to wait for dataLayer events
+	waitForDataLayerEvent: (eventLabel, timeout = 1000) => {
+		return new Promise((resolve, reject) => {
+			const startTime = Date.now();
+			const checkEvent = () => {
+				const event = global.testUtils.findDataLayerEvent(eventLabel);
+				if (event) {
+					resolve(event);
+				} else if (Date.now() - startTime > timeout) {
+					reject(new Error(`Timeout waiting for dataLayer event: ${eventLabel}`));
+				} else {
+					setTimeout(checkEvent, 10);
+				}
+			};
+			checkEvent();
 		});
 	},
 }; 

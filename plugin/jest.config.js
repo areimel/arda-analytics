@@ -26,6 +26,11 @@ module.exports = {
 	// Module paths
 	moduleDirectories: ['node_modules', 'src'],
 	
+	// Module name mapping to handle .js imports for TypeScript files
+	moduleNameMapper: {
+		'^(\\.{1,2}/.*)\\.js$': '$1',
+	},
+	
 	// Transform files
 	transform: {
 		'^.+\\.(js|ts)$': 'babel-jest',
@@ -34,8 +39,8 @@ module.exports = {
 	// Setup files
 	setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.js'],
 
-	// Module file extensions
-	moduleFileExtensions: ['js', 'ts', 'json'],
+	// Module file extensions (prioritize .ts over .js)
+	moduleFileExtensions: ['ts', 'js', 'json'],
 
 	// Clear mocks
 	clearMocks: true,
@@ -53,4 +58,14 @@ module.exports = {
 			statements: 20,
 		},
 	},
+
+	// Add extensionsToTreatAsEsm for better ES module support
+	extensionsToTreatAsEsm: ['.ts'],
+	
+	// Globals for TypeScript compilation
+	globals: {
+		'ts-jest': {
+			useESM: true
+		}
+	}
 }; 

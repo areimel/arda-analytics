@@ -12,6 +12,11 @@
         "external": false
       },
       {
+        "name": "Tools",
+        "href": "/tools",
+        "external": false
+      },
+      {
         "name": "Docs",
         "href": "/docs",
         "external": false
