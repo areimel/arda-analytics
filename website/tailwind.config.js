@@ -95,6 +95,13 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      animationDelay: {
+        "0": "0s",
+        "2000": "2s",
+        "4000": "4s",
+        "6000": "6s",
+        "8000": "8s",
+      },
     },
   },
   plugins: [],
