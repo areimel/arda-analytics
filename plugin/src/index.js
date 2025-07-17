@@ -91,28 +91,28 @@ class ARDAAnalytics {
 		const { type, metadata } = eventData;
 		
 		switch (type) {
-			case 'user_click':
-				if (metadata?.tagName === 'A') {
-					return 'click_link';
-				} else if (metadata?.tagName === 'BUTTON') {
-					return 'click_button';
-				}
-				return 'click_element';
-				
-			case 'page_view':
-				if (metadata?.utmParams && Object.keys(metadata.utmParams).length > 0) {
-					return 'page_view_utm';
-				}
-				return 'page_view';
-				
-			case 'form_submit':
-				return 'form_submit';
-				
-			case 'form_validation_error':
-				return 'form_error';
-				
-			default:
-				return `custom_${type}`;
+		case 'user_click':
+			if (metadata?.tagName === 'A') {
+				return 'click_link';
+			} else if (metadata?.tagName === 'BUTTON') {
+				return 'click_button';
+			}
+			return 'click_element';
+			
+		case 'page_view':
+			if (metadata?.utmParams && Object.keys(metadata.utmParams).length > 0) {
+				return 'page_view_utm';
+			}
+			return 'page_view';
+			
+		case 'form_submit':
+			return 'form_submit';
+			
+		case 'form_validation_error':
+			return 'form_error';
+			
+		default:
+			return `custom_${type}`;
 		}
 	}
 

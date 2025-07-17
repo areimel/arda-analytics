@@ -40,7 +40,7 @@ global.fetch = jest.fn();
 Object.defineProperty(window, 'dataLayer', {
 	writable: true,
 	configurable: true,
-	value: []
+	value: [],
 });
 
 // Mock console methods for cleaner test output
@@ -64,7 +64,7 @@ beforeEach(() => {
 	Object.defineProperty(window, 'dataLayer', {
 		writable: true,
 		configurable: true,
-		value: []
+		value: [],
 	});
 	
 	// Reset console mocks but keep original functionality for actual errors
@@ -113,7 +113,7 @@ global.testUtils = {
 	// Helper to find events in dataLayer
 	findDataLayerEvent: (eventLabel) => {
 		return window.dataLayer.find(
-			event => event.event === 'CustomEvent' && event.eventLabel === eventLabel
+			event => event.event === 'CustomEvent' && event.eventLabel === eventLabel,
 		);
 	},
 	

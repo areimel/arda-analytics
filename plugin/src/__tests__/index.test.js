@@ -77,13 +77,13 @@ describe('ARDA Analytics', () => {
 			expect(result.success).toBe(true);
 			expect(result.eventData).toEqual({
 				event: 'CustomEvent',
-				eventLabel: 'test_event'
+				eventLabel: 'test_event',
 			});
 			
 			// Check if event was added to dataLayer
 			expect(window.dataLayer).toContainEqual({
 				event: 'CustomEvent',
-				eventLabel: 'test_event'
+				eventLabel: 'test_event',
 			});
 		});
 
@@ -91,7 +91,7 @@ describe('ARDA Analytics', () => {
 			// Simulate error by making dataLayer non-writable
 			Object.defineProperty(window, 'dataLayer', {
 				writable: false,
-				value: null
+				value: null,
 			});
 
 			const result = analytics.pushEvent('test_event');
