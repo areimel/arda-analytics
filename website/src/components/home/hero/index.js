@@ -1,0 +1,5 @@
+export { HeroSection } from './HeroSection'
+export { HeroTitle } from './HeroTitle'
+export { HeroDescription } from './HeroDescription'
+export { HeroActions } from './HeroActions'
+export { HeroStats } from './HeroStats'
