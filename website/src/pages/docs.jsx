@@ -1,14 +1,12 @@
-import { useState } from 'react';
-import { Book, Code, Zap, Shield, Settings, Users, ChevronRight, Search, Package, Globe, Wrench } from 'lucide-react';
+import { Code, Zap, Shield, Settings, Package, Globe, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { PageHead } from '@/components/seo/page-head';
+import { PageHeader } from '@/components/shared/PageHeader';
+import { InfoCard } from '@/components/shared/InfoCard';
+import { GridCardLayout } from '@/components/shared/GridCardLayout';
+import { SearchableContent } from '@/components/shared/SearchableContent';
 
 export function DocsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-
   const sections = [
     {
       title: 'Getting Started',
@@ -73,145 +71,67 @@ export function DocsPage() {
     }
   ];
 
-  const filteredSections = sections.map(section => ({
-    ...section,
-    items: section.items.filter(item =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })).filter(section => section.items.length > 0);
-
   return (
     <>
       <PageHead page="docs" />
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Documentation</h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to integrate ARDA Analytics into your applications. 
-              From quick start guides to advanced configuration options.
-            </p>
-          </div>
+          <PageHeader 
+            title="Documentation"
+            description="Everything you need to integrate ARDA Analytics into your applications. From quick start guides to advanced configuration options."
+          />
 
-          {/* Search */}
-          <div className="mb-8 max-w-md mx-auto">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search documentation..."
-                className="pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Documentation Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {(searchTerm ? filteredSections : sections).map((section, index) => (
-              <Card key={index} className="h-fit">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                      {section.icon}
-                    </div>
-                    <div>
-                      <CardTitle>{section.title}</CardTitle>
-                      <CardDescription className="mt-1">
-                        {section.description}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {section.items.map((item, itemIndex) => (
-                      <a
-                        key={itemIndex}
-                        href={item.href}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors group"
-                      >
-                        <div>
-                          <div className="font-medium group-hover:text-primary">
-                            {item.name}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {item.description}
-                          </div>
-                        </div>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                      </a>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* No Results */}
-          {searchTerm && filteredSections.length === 0 && (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">No documentation found for "{searchTerm}"</p>
-              <Button variant="outline" onClick={() => setSearchTerm('')} className="mt-4">
-                Clear Search
-              </Button>
-            </div>
-          )}
+          <SearchableContent 
+            placeholder="Search documentation..."
+            data={sections}
+            searchFields={['name', 'description']}
+            noResultsMessage="No documentation found for"
+          >
+            {(displayData) => (
+              <GridCardLayout columns={{ base: 1, lg: 2 }} gap={8}>
+                {displayData.map((section, index) => (
+                  <InfoCard
+                    key={index}
+                    variant="docs-section"
+                    title={section.title}
+                    description={section.description}
+                    icon={section.icon}
+                    items={section.items}
+                  />
+                ))}
+              </GridCardLayout>
+            )}
+          </SearchableContent>
 
           {/* Popular Pages */}
           <div className="mt-12">
             <h2 className="text-2xl font-semibold mb-6">Popular Pages</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <a href="/docs/installation">
-                <Card className="group hover:shadow-md transition-all cursor-pointer hover:ring-2 hover:ring-primary/20">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Package className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <h3 className="font-semibold">Installation Guide</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      NPM, CDN, and self-hosted setup options with step-by-step instructions.
-                    </p>
-                  </CardContent>
-                </Card>
-              </a>
-
-              <a href="/docs/api">
-                <Card className="group hover:shadow-md transition-all cursor-pointer hover:ring-2 hover:ring-primary/20">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Code className="h-5 w-5 text-green-600" />
-                      </div>
-                      <h3 className="font-semibold">API Reference</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Complete API documentation with examples, parameters, and return types.
-                    </p>
-                  </CardContent>
-                </Card>
-              </a>
-
-              <a href="/docs/frameworks">
-                <Card className="group hover:shadow-md transition-all cursor-pointer hover:ring-2 hover:ring-primary/20">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <Settings className="h-5 w-5 text-purple-600" />
-                      </div>
-                      <h3 className="font-semibold">Framework Integration</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      React, Vue, Astro, WordPress, and other platform integrations.
-                    </p>
-                  </CardContent>
-                </Card>
-              </a>
-            </div>
+            <GridCardLayout columns={{ base: 1, md: 3 }} gap={6}>
+              <InfoCard
+                variant="docs-popular"
+                title="Installation Guide"
+                description="NPM, CDN, and self-hosted setup options with step-by-step instructions."
+                icon={<Package className="h-5 w-5" />}
+                href="/docs/installation"
+                iconColor="blue"
+              />
+              <InfoCard
+                variant="docs-popular"
+                title="API Reference"
+                description="Complete API documentation with examples, parameters, and return types."
+                icon={<Code className="h-5 w-5" />}
+                href="/docs/api"
+                iconColor="green"
+              />
+              <InfoCard
+                variant="docs-popular"
+                title="Framework Integration"
+                description="React, Vue, Astro, WordPress, and other platform integrations."
+                icon={<Settings className="h-5 w-5" />}
+                href="/docs/frameworks"
+                iconColor="purple"
+              />
+            </GridCardLayout>
           </div>
 
           {/* Getting Started CTA */}

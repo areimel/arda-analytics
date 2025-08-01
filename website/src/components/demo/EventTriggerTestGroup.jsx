@@ -25,9 +25,9 @@ export function EventTriggerTestGroup() {
 	// Helper function to push events using the ARDA plugin
 	const pushEvent = (eventName) => {
 		try {
-			if (window.ARDAAnalytics && window.ARDAAnalytics.pushToDataLayer) {
-				// Call the plugin's pushToDataLayer function directly
-				const result = window.ARDAAnalytics.pushToDataLayer(eventName)
+			if (window.ARDAAnalytics && window.ARDAAnalytics.pushEvent) {
+				// Call the plugin's pushEvent function (real plugin method)
+				const result = window.ARDAAnalytics.pushEvent(eventName)
 				if (!result.success) {
 					console.warn('Failed to push event:', eventName, result.error)
 				}

@@ -6,7 +6,7 @@ const createConfig = (env, options) => {
 	const isDevelopment = options.mode === 'development';
 
 	const baseConfig = {
-		entry: './src/index.js',
+		entry: './src/index.ts',
 		resolve: {
 			extensions: ['.ts', '.js'],
 			extensionAlias: {

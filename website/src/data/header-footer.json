@@ -9,17 +9,78 @@
       {
         "name": "Demo",
         "href": "/demo",
-        "external": false
+        "external": false,
+        "dropdown": [
+          {
+            "name": "All Demos",
+            "href": "/demo",
+            "description": "Overview of all demo examples"
+          },
+          {
+            "name": "Click Events",
+            "href": "/demo/click-events",
+            "description": "Button clicks and user interactions"
+          },
+          {
+            "name": "Form Events",
+            "href": "/demo/form-events",
+            "description": "Form submissions and validations"
+          },
+          {
+            "name": "Page View Events",
+            "href": "/demo/page-view-events",
+            "description": "Page navigation and view tracking"
+          }
+        ]
       },
       {
         "name": "Tools",
         "href": "/tools",
-        "external": false
+        "external": false,
+        "dropdown": [
+          {
+            "name": "All Tools",
+            "href": "/tools",
+            "description": "Complete toolkit overview"
+          },
+          {
+            "name": "Tracking URL Builder",
+            "href": "/tools/tracking-url-builder",
+            "description": "Generate URLs with UTM parameters"
+          },
+          {
+            "name": "QR Code Generator",
+            "href": "/tools/qr-code-generator",
+            "description": "Create QR codes for tracking campaigns"
+          }
+        ]
       },
       {
         "name": "Docs",
         "href": "/docs",
-        "external": false
+        "external": false,
+        "dropdown": [
+          {
+            "name": "Documentation",
+            "href": "/docs",
+            "description": "Complete documentation overview"
+          },
+          {
+            "name": "Installation",
+            "href": "/docs/installation",
+            "description": "Getting started guide"
+          },
+          {
+            "name": "API Reference",
+            "href": "/docs/api",
+            "description": "Complete API documentation"
+          },
+          {
+            "name": "Frameworks",
+            "href": "/docs/frameworks",
+            "description": "Framework-specific guides"
+          }
+        ]
       }
     ],
     "cta": {

@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
 import { PageHead } from '@/components/seo/page-head'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Link as LinkIcon, QrCode, ChevronRight } from 'lucide-react'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { InfoCard } from '@/components/shared/InfoCard'
+import { GridCardLayout } from '@/components/shared/GridCardLayout'
+import { Card, CardContent } from '@/components/ui/card'
+import { Link as LinkIcon, QrCode } from 'lucide-react'
 
 export function ToolsPage() {
 	const tools = [
@@ -33,59 +33,28 @@ export function ToolsPage() {
 			<div className="min-h-screen bg-background">
 				<div className="container mx-auto px-4 py-8 max-w-6xl">
 					{/* Header */}
-					<div className="text-center mb-12">
-						<h1 className="text-4xl font-bold mb-4 font-mono">Developer Tools</h1>
-						<p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-							A collection of useful tools for developers, marketers, and content creators. 
-							All tools are free to use and work entirely in your browser.
-						</p>
-					</div>
+					<PageHeader
+						title="Developer Tools"
+						description="A collection of useful tools for developers, marketers, and content creators. All tools are free to use and work entirely in your browser."
+						useMono={true}
+					/>
 
 					{/* Tools Grid */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+					<GridCardLayout columns={{ base: 1, md: 2 }} gap={8} className="mb-12">
 						{tools.map((tool) => (
-							<Card key={tool.id} className="group hover:shadow-lg transition-all duration-300 hover:ring-2 hover:ring-primary/20">
-								<CardHeader>
-									<div className="flex items-start justify-between">
-										<div className="flex items-center gap-3">
-											<div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-												{tool.icon}
-											</div>
-											<div>
-												<CardTitle className="text-xl">{tool.title}</CardTitle>
-												<Badge variant="secondary" className="mt-1">
-													{tool.category}
-												</Badge>
-											</div>
-										</div>
-										<ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-									</div>
-									<CardDescription className="text-base mt-3">
-										{tool.description}
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-4">
-										<div>
-											<h4 className="text-sm font-medium mb-2">Features:</h4>
-											<div className="flex flex-wrap gap-2">
-												{tool.features.map((feature, index) => (
-													<Badge key={index} variant="outline" className="text-xs">
-														{feature}
-													</Badge>
-												))}
-											</div>
-										</div>
-										<Button asChild className="w-full">
-											<Link to={tool.href}>
-												Open Tool
-											</Link>
-										</Button>
-									</div>
-								</CardContent>
-							</Card>
+							<InfoCard
+								key={tool.id}
+								variant="tool"
+								title={tool.title}
+								description={tool.description}
+								icon={tool.icon}
+								category={tool.category}
+								features={tool.features}
+								href={tool.href}
+								buttonText="Open Tool"
+							/>
 						))}
-					</div>
+					</GridCardLayout>
 
 					{/* Coming Soon Section */}
 					<div className="text-center">
