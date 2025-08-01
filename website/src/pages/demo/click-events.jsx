@@ -10,56 +10,32 @@ import { CodeDisplayCard } from '@/components/shared/CodeDisplayCard'
 import { MousePointer, ExternalLink, Download, Star, Play } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { getBrandInfo } from '@/lib/content'
+import ARDAAnalytics from '@plugin/index.ts'
 
 export function ClickEventsPage() {
 	const [pluginLoaded, setPluginLoaded] = useState(false)
+	const [analytics, setAnalytics] = useState(null)
 	const brandInfo = getBrandInfo()
 
 	// Initialize ARDA Analytics plugin
 	useEffect(() => {
 		const initPlugin = async () => {
 			if (typeof window !== 'undefined') {
-				window.dataLayer = window.dataLayer || []
+				// Initialize the actual ARDA Analytics plugin
+				const analyticsInstance = new ARDAAnalytics({
+					debug: true,
+					enableUTMTracking: true,
+					enableFormTracking: true,
+					enableJourneyTracking: true
+				})
+
+				// Store the instance for use in the component
+				setAnalytics(analyticsInstance)
 				
-				window.ARDAAnalytics = {
-					pushToDataLayer: (eventName) => {
-						try {
-							const gtmEvent = {
-								event: "CustomEvent",
-								eventLabel: eventName
-							}
-							
-							window.dataLayer.push(gtmEvent)
-							
-							window.dispatchEvent(new CustomEvent('arda-event-logged', {
-								detail: {
-									eventName: eventName,
-									success: true,
-									timestamp: Date.now(),
-									metadata: { gtmEvent }
-								}
-							}))
-							
-							console.log('ARDA Analytics - Event pushed:', eventName, gtmEvent)
-							return { success: true, eventData: gtmEvent }
-						} catch (error) {
-							console.error('ARDA Analytics - Event push failed:', error)
-							
-							window.dispatchEvent(new CustomEvent('arda-event-logged', {
-								detail: {
-									eventName: eventName,
-									success: false,
-									timestamp: Date.now(),
-									metadata: { error: error.message }
-								}
-							}))
-							
-							return { success: false, error: error.message }
-						}
-					}
-				}
+				// Also expose it globally for the demo
+				window.ARDAAnalytics = analyticsInstance
 				
-				console.log('ARDA Analytics Demo Plugin Initialized')
+				console.log('ARDA Analytics Plugin Initialized (Real Plugin)')
 				setPluginLoaded(true)
 			}
 		}
@@ -68,8 +44,8 @@ export function ClickEventsPage() {
 	}, [])
 
 	const triggerEvent = (eventName) => {
-		if (window.ARDAAnalytics) {
-			window.ARDAAnalytics.pushToDataLayer(eventName)
+		if (analytics) {
+			analytics.pushEvent(eventName)
 		}
 	}
 
@@ -93,7 +69,7 @@ export function ClickEventsPage() {
 					<div className="mb-8">
 						<StatusCard
 							status={pluginLoaded ? 'ready' : 'loading'}
-							message={pluginLoaded ? 'ARDA Analytics Plugin Ready (Demo Mode)' : 'Loading plugin...'}
+							message={pluginLoaded ? 'ARDA Analytics Plugin Ready - Full Analytics Suite Active' : 'Loading plugin...'}
 						/>
 					</div>
 
@@ -246,13 +222,110 @@ export function ClickEventsPage() {
 						</Card>
 					</div>
 
+					{/* Advanced Analytics Features */}
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+						{/* UTM & Click Attribution */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Badge variant="secondary">NEW</Badge>
+									Click Attribution & UTM
+								</CardTitle>
+								<CardDescription>
+									Advanced click tracking with UTM parameter attribution
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const utmData = analytics.getUTMParameters();
+												console.log('Click with UTM context:', utmData);
+												triggerEvent('click_with_utm_attribution');
+											}
+										}}
+										className="w-full"
+									>
+										Track Click with UTM Attribution
+									</Button>
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												// Create custom journey trigger for click sequences
+												analytics.createJourneyTrigger(
+													['cta_primary_click', 'resource_download'],
+													() => {
+														console.log('🎯 Click sequence completed: CTA → Download');
+														triggerEvent('click_sequence_cta_to_download');
+													},
+													{ triggerId: 'demo_click_sequence', onceOnly: false }
+												);
+												triggerEvent('click_sequence_trigger_created');
+											}
+										}}
+										className="w-full"
+									>
+										Create Click Sequence Trigger
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+
+						{/* Click Pattern Analysis */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Badge variant="secondary">NEW</Badge>
+									Click Pattern Analysis
+								</CardTitle>
+								<CardDescription>
+									View click patterns and event sequences
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const recentEvents = analytics.getRecentEvents(15);
+												const clickEvents = recentEvents.filter(e => e.eventName.includes('click'));
+												console.log('Recent Click Events:', clickEvents);
+												triggerEvent('click_pattern_analyzed');
+											}
+										}}
+										className="w-full"
+									>
+										Analyze Click Patterns
+									</Button>
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const summary = analytics.getAnalyticsSummary();
+												console.log('Full Analytics Summary:', summary);
+												triggerEvent('analytics_summary_for_clicks');
+											}
+										}}
+										className="w-full"
+									>
+										Get Click Analytics Summary
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+
 					{/* Code Example */}
 					<CodeDisplayCard
 						title="Implementation Example"
 						description="How to implement click tracking in your application"
 						code={`// React Component Example
 import { useEffect } from 'react';
-import ARDAAnalytics from '@arda-analytics/plugin';
+import ARDAAnalytics from '@plugin/index.ts';
 
 function MyComponent() {
   useEffect(() => {

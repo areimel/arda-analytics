@@ -10,9 +10,11 @@ import { MetricCard } from '@/components/shared/MetricCard'
 import { CodeDisplayCard } from '@/components/shared/CodeDisplayCard'
 import { Eye, Clock, BarChart3, Target, Play, Pause } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
+import ARDAAnalytics from '@plugin/index.ts'
 
 export function PageViewEventsPage() {
 	const [pluginLoaded, setPluginLoaded] = useState(false)
+	const [analytics, setAnalytics] = useState(null)
 	const [timeOnPage, setTimeOnPage] = useState(0)
 	const [scrollPercent, setScrollPercent] = useState(0)
 	const [isVisible, setIsVisible] = useState(true)
@@ -24,47 +26,21 @@ export function PageViewEventsPage() {
 	useEffect(() => {
 		const initPlugin = async () => {
 			if (typeof window !== 'undefined') {
-				window.dataLayer = window.dataLayer || []
+				// Initialize the actual ARDA Analytics plugin
+				const analyticsInstance = new ARDAAnalytics({
+					debug: true,
+					enableUTMTracking: true,
+					enableFormTracking: true,
+					enableJourneyTracking: true
+				})
+
+				// Store the instance for use in the component
+				setAnalytics(analyticsInstance)
 				
-				window.ARDAAnalytics = {
-					pushToDataLayer: (eventName) => {
-						try {
-							const gtmEvent = {
-								event: "CustomEvent",
-								eventLabel: eventName
-							}
-							
-							window.dataLayer.push(gtmEvent)
-							
-							window.dispatchEvent(new CustomEvent('arda-event-logged', {
-								detail: {
-									eventName: eventName,
-									success: true,
-									timestamp: Date.now(),
-									metadata: { gtmEvent }
-								}
-							}))
-							
-							console.log('ARDA Analytics - Event pushed:', eventName, gtmEvent)
-							return { success: true, eventData: gtmEvent }
-						} catch (error) {
-							console.error('ARDA Analytics - Event push failed:', error)
-							
-							window.dispatchEvent(new CustomEvent('arda-event-logged', {
-								detail: {
-									eventName: eventName,
-									success: false,
-									timestamp: Date.now(),
-									metadata: { error: error.message }
-								}
-							}))
-							
-							return { success: false, error: error.message }
-						}
-					}
-				}
+				// Also expose it globally for the demo
+				window.ARDAAnalytics = analyticsInstance
 				
-				console.log('ARDA Analytics Demo Plugin Initialized')
+				console.log('ARDA Analytics Plugin Initialized (Real Plugin)')
 				setPluginLoaded(true)
 				
 				// Send page view event
@@ -169,8 +145,8 @@ export function PageViewEventsPage() {
 	}, [])
 
 	const triggerEvent = (eventName) => {
-		if (window.ARDAAnalytics) {
-			window.ARDAAnalytics.pushToDataLayer(eventName)
+		if (analytics) {
+			analytics.pushEvent(eventName)
 		}
 	}
 
@@ -200,7 +176,7 @@ export function PageViewEventsPage() {
 					<div className="mb-8">
 						<StatusCard
 							status={pluginLoaded ? 'ready' : 'loading'}
-							message={pluginLoaded ? 'ARDA Analytics Plugin Ready (Demo Mode)' : 'Loading plugin...'}
+							message={pluginLoaded ? 'ARDA Analytics Plugin Ready - Full Analytics Suite Active' : 'Loading plugin...'}
 						/>
 					</div>
 
@@ -324,6 +300,118 @@ export function PageViewEventsPage() {
 						</Card>
 					</div>
 
+					{/* Advanced Analytics Features */}
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+						{/* UTM & Page Context */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Badge variant="secondary">NEW</Badge>
+									Page Context & UTM
+								</CardTitle>
+								<CardDescription>
+									Advanced page tracking with UTM and journey context
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const utmData = analytics.getUTMParameters();
+												const summary = analytics.getAnalyticsSummary();
+												console.log('Page View with Full Context:', {
+													utm: utmData,
+													timeOnPage: formatTime(timeOnPage),
+													scrollDepth: scrollPercent,
+													summary
+												});
+												triggerEvent('page_view_with_full_context');
+											}
+										}}
+										className="w-full"
+									>
+										Get Page View Context
+									</Button>
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												// Create journey trigger for page engagement
+												analytics.createJourneyTrigger(
+													['page_view_demo_loaded', 'scroll_depth_50_percent', 'time_on_page_30_seconds'],
+													() => {
+														console.log('🎯 High page engagement detected!');
+														triggerEvent('high_page_engagement_achieved');
+													},
+													{ triggerId: 'demo_page_engagement', onceOnly: true }
+												);
+												triggerEvent('page_engagement_trigger_created');
+											}
+										}}
+										className="w-full"
+									>
+										Create Engagement Trigger
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+
+						{/* Session & Journey Analysis */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Badge variant="secondary">NEW</Badge>
+									Session Analysis
+								</CardTitle>
+								<CardDescription>
+									Analyze page behavior within user journey
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const recentEvents = analytics.getRecentEvents(20);
+												const pageEvents = recentEvents.filter(e => 
+													e.eventName.includes('page_') || 
+													e.eventName.includes('scroll_') || 
+													e.eventName.includes('time_')
+												);
+												console.log('Page Behavior Analysis:', pageEvents);
+												triggerEvent('page_behavior_analyzed');
+											}
+										}}
+										className="w-full"
+									>
+										Analyze Page Behavior
+									</Button>
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const userService = analytics.getUserDataService();
+												console.log('User Session Data:', {
+													currentPage: window.location.pathname,
+													timeOnPage: formatTime(timeOnPage),
+													scrollProgress: scrollPercent,
+													userAgent: navigator.userAgent.slice(0, 50) + '...'
+												});
+												triggerEvent('session_data_captured');
+											}
+										}}
+										className="w-full"
+									>
+										Capture Session Data
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+
 					{/* Long Content Section for Scroll Tracking */}
 					<Card className="mb-8" ref={contentRef}>
 						<CardHeader>
@@ -376,7 +464,7 @@ export function PageViewEventsPage() {
 						title="Implementation Example"
 						description="How to implement page view and engagement tracking"
 						code={`// Page View and Engagement Tracking
-import ARDAAnalytics from '@arda-analytics/plugin';
+import ARDAAnalytics from '@plugin/index.ts';
 
 function PageTracker() {
   const analytics = new ARDAAnalytics();

@@ -14,9 +14,11 @@ import { StatusCard } from '@/components/shared/StatusCard'
 import { CodeDisplayCard } from '@/components/shared/CodeDisplayCard'
 import { FileText, Send, User, AlertCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import ARDAAnalytics from '@plugin/index.ts'
 
 export function FormEventsPage() {
 	const [pluginLoaded, setPluginLoaded] = useState(false)
+	const [analytics, setAnalytics] = useState(null)
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -31,47 +33,21 @@ export function FormEventsPage() {
 	useEffect(() => {
 		const initPlugin = async () => {
 			if (typeof window !== 'undefined') {
-				window.dataLayer = window.dataLayer || []
+				// Initialize the actual ARDA Analytics plugin
+				const analyticsInstance = new ARDAAnalytics({
+					debug: true,
+					enableUTMTracking: true,
+					enableFormTracking: true,
+					enableJourneyTracking: true
+				})
+
+				// Store the instance for use in the component
+				setAnalytics(analyticsInstance)
 				
-				window.ARDAAnalytics = {
-					pushToDataLayer: (eventName) => {
-						try {
-							const gtmEvent = {
-								event: "CustomEvent",
-								eventLabel: eventName
-							}
-							
-							window.dataLayer.push(gtmEvent)
-							
-							window.dispatchEvent(new CustomEvent('arda-event-logged', {
-								detail: {
-									eventName: eventName,
-									success: true,
-									timestamp: Date.now(),
-									metadata: { gtmEvent }
-								}
-							}))
-							
-							console.log('ARDA Analytics - Event pushed:', eventName, gtmEvent)
-							return { success: true, eventData: gtmEvent }
-						} catch (error) {
-							console.error('ARDA Analytics - Event push failed:', error)
-							
-							window.dispatchEvent(new CustomEvent('arda-event-logged', {
-								detail: {
-									eventName: eventName,
-									success: false,
-									timestamp: Date.now(),
-									metadata: { error: error.message }
-								}
-							}))
-							
-							return { success: false, error: error.message }
-						}
-					}
-				}
+				// Also expose it globally for the demo
+				window.ARDAAnalytics = analyticsInstance
 				
-				console.log('ARDA Analytics Demo Plugin Initialized')
+				console.log('ARDA Analytics Plugin Initialized (Real Plugin)')
 				setPluginLoaded(true)
 			}
 		}
@@ -80,8 +56,8 @@ export function FormEventsPage() {
 	}, [])
 
 	const triggerEvent = (eventName) => {
-		if (window.ARDAAnalytics) {
-			window.ARDAAnalytics.pushToDataLayer(eventName)
+		if (analytics) {
+			analytics.pushEvent(eventName)
 		}
 	}
 
@@ -133,7 +109,7 @@ export function FormEventsPage() {
 					<div className="mb-8">
 						<StatusCard
 							status={pluginLoaded ? 'ready' : 'loading'}
-							message={pluginLoaded ? 'ARDA Analytics Plugin Ready (Demo Mode)' : 'Loading plugin...'}
+							message={pluginLoaded ? 'ARDA Analytics Plugin Ready - Full Analytics Suite Active' : 'Loading plugin...'}
 						/>
 					</div>
 
@@ -376,12 +352,107 @@ export function FormEventsPage() {
 						</CardContent>
 					</Card>
 
+					{/* Advanced Analytics Features */}
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+						{/* UTM Tracking Demo */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Badge variant="secondary">NEW</Badge>
+									UTM Parameter Tracking
+								</CardTitle>
+								<CardDescription>
+									View current UTM parameters and test tracking
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const utmData = analytics.getUTMParameters();
+												console.log('Current UTM Data:', utmData);
+												triggerEvent('utm_parameters_checked');
+											}
+										}}
+										className="w-full"
+									>
+										Check UTM Parameters
+									</Button>
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const summary = analytics.getAnalyticsSummary();
+												console.log('Analytics Summary:', summary);
+												triggerEvent('analytics_summary_generated');
+											}
+										}}
+										className="w-full"
+									>
+										Get Analytics Summary
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+
+						{/* Journey Tracking Demo */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Badge variant="secondary">NEW</Badge>
+									User Journey Tracking
+								</CardTitle>
+								<CardDescription>
+									View recent events and create journey triggers
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												const recentEvents = analytics.getRecentEvents(10);
+												console.log('Recent Events:', recentEvents);
+												triggerEvent('recent_events_checked');
+											}
+										}}
+										className="w-full"
+									>
+										View Recent Events
+									</Button>
+									<Button 
+										variant="outline" 
+										onClick={() => {
+											if (analytics) {
+												analytics.createJourneyTrigger(
+													['contact_form_submit', 'form_validation_success'],
+													() => {
+														console.log('🎯 Journey trigger activated: Form success flow!');
+														triggerEvent('journey_trigger_form_success');
+													},
+													{ triggerId: 'demo_form_success', onceOnly: false }
+												);
+												triggerEvent('journey_trigger_created');
+											}
+										}}
+										className="w-full"
+									>
+										Create Journey Trigger
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+
 					{/* Code Example */}
 					<CodeDisplayCard
 						title="Implementation Example"
 						description="How to implement form event tracking in your application"
 						code={`// Form Event Tracking Implementation
-import ARDAAnalytics from '@arda-analytics/plugin';
+import ARDAAnalytics from '@plugin/index.ts';
 
 function ContactForm() {
   const analytics = new ARDAAnalytics();
